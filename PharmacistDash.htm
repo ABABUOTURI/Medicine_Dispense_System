@@ -65,8 +65,8 @@
     left: 50%;
     transform: translateX(-50%);
     width: 95%;
-    background-color: #fff;
-    color: #D3D3D3;
+    background-color: #D3D3D3;
+    color: #008080;
     border-radius: 20px;
     padding: 22px 20px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -157,7 +157,7 @@
             <div class="dashboard-buttons">
                 <div class="row">
                     <div class="button drug-stock">Drug Stock</div>
-                    <div class="button issue-to-account">Dispensed Drugs</div>
+                    <div class="button issue-to-account">Medications</div>
                     <div class="button order-drugs">Order Drugs</div>
                 </div>
                 <div class="row">
@@ -192,8 +192,8 @@
                    case 'Patient OTP':
                        document.getElementById('otp-popup').style.display = 'flex';
                        break;
-                   case 'Dispensed Drugs':
-                       window.location.href = 'DispenseDRug.htm'; // Replace with the actual URL for Dispense Drugs page
+                   case 'Medications':
+                       window.location.href = 'MedicationsIssued.htm'; // Replace with the actual URL for Dispense Drugs page
                        break;
                    default:
                        alert(`No page available for ${button.textContent.trim()}`);
@@ -207,7 +207,7 @@
            if (otpCode) {
                // Simulate OTP validation and navigation
                // You can add actual OTP validation here if needed
-               window.location.href = 'MedicationsIssued.htm'; // Navigate to DispenseDRug page
+               window.location.href = 'DispenseDRug.htm'; // Navigate to DispenseDRug page
            } else {
                alert('Please enter OTP code.');
            }

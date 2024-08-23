@@ -3,7 +3,7 @@ body, html {
     margin: 0;
     font-family: Arial, sans-serif;
     /*background: linear-gradient(135deg, #008080, #87CEEB,#008080, #D3D3D3);*/
-    background-color: #D3D3D3;
+    background-color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -167,7 +167,7 @@ a:hover {
 .dashboard-container {
    
     align-items: center;
-    background-color: white;
+    background-color: #D3D3D3;
     border-radius: 10px;
     padding: 20px;
     margin: 0 10%;

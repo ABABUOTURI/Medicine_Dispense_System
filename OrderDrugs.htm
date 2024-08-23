@@ -40,7 +40,6 @@
             margin-left: 10px;
         }
 
-        /* Sidebar styling */
         .sidebar {
             width: 200px;
             background-color: #008080;
@@ -170,16 +169,34 @@
             background-color: #87CEEB;
             color: #008080;
         }
+
+        .add-btn {
+            background-color: #008080;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 20px auto;
+            display: block;
+            width: fit-content;
+        }
+
+        .add-btn:hover {
+            background-color: #87CEEB;
+            color: #008080;
+        }
+
+        select {
+            padding: 5px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
     <main>
         <div class="floating-header">
             <h1>Order Drugs</h1>
-            <!--<div class="profile-icon">
-                <a href="#">My Profile</a>
-                <img src="profile-icon.png" alt="Profile Icon">
-            </div>-->
         </div>
 
         <div class="sidebar" style="margin-top: 10px;">
@@ -192,29 +209,25 @@
             </ul>
         </div>
 
-        <!-- Centered Heading outside the dashboard-container -->
-
         <div style="width: 1000px; background-color: #D3D3D3;margin-left: 280px;border-radius: 5px;margin-top: 8%;">
             <div class="dashboard-container" style="width: 900px; margin-top: 10%;padding: 3%;">
+                <button class="add-btn" onclick="addDrug()">Add Drug</button>
                 <div style="max-width: 100%;">
-                 <div class="search-container">
-                     <input type="text" placeholder="Search by Medicine Name or ID">
-                     <button class="search-btn">Search</button>
-                 </div>
                  <table>
                      <thead>
                          <tr>
                              <th>Id</th>
                              <th>Medicine</th>
                              <th>Quantity</th>
+                             <th>Status</th>
                              <th>Actions</th>
                          </tr>
                      </thead>
                      <tbody id="drugData">
-                         <!-- Drug stock data rows will be dynamically injected here -->
+                         <!-- Drug order data rows will be dynamically injected here -->
                      </tbody>
                  </table>
-                 <p class="no-data" style="display: none;">No drugs found in stock</p>
+                 <p class="no-data" style="display: none;">No drugs ordered yet</p>
                  <button class="save-btn" onclick="saveData()">Save All</button>
                 </div>
              </div>
@@ -222,70 +235,70 @@
     </main>
 
     <script>
-        // Sample data for drug stock, you would normally fetch this from your backend
-        let drugStock = [
-            { id: 1, medicine: 'Paracetamol', quantity: 100 },
-            { id: 2, medicine: 'Ibuprofen', quantity: 50 },
-            { id: 3, medicine: 'Amoxicillin', quantity: 75 },
-            { id: 4, medicine: 'Cetirizine', quantity: 200 },
-            { id: 5, medicine: 'Piriton', quantity: 200 },
-            { id: 6, medicine: 'ABZ', quantity: 200 },
-            { id: 7, medicine: 'Brufen', quantity: 200 },
-            { id: 8, medicine: 'Brufen', quantity: 200 },
-            { id: 9, medicine: 'Brufen', quantity: 200 },
-            { id: 10, medicine: 'Brufen', quantity: 200 },
-        ];
+        let drugOrders = [];
+        let nextId = 1;
 
-        document.addEventListener('DOMContentLoaded', function () {
+        function addDrug() {
+            const newDrug = {
+                id: nextId++,
+                medicine: '',
+                quantity: 1,
+                status: 'pending',
+                isEditing: true
+            };
+            drugOrders.push(newDrug);
+            renderDrugOrders();
+        }
+
+        function renderDrugOrders() {
             const drugDataContainer = document.getElementById('drugData');
+            drugDataContainer.innerHTML = '';
 
-            if (drugStock.length === 0) {
+            if (drugOrders.length === 0) {
                 document.querySelector('.no-data').style.display = 'block';
             } else {
-                drugStock.forEach(drug => {
+                document.querySelector('.no-data').style.display = 'none';
+                drugOrders.forEach(drug => {
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${drug.id}</td>
-                        <td><input type="text" value="${drug.medicine}" data-id="${drug.id}" class="medicine-input"></td>
-                        <td><input type="number" value="${drug.quantity}" data-id="${drug.id}" class="quantity-input"></td>
+                        <td><input type="text" value="${drug.medicine}" data-id="${drug.id}" class="medicine-input" ${drug.isEditing ? '' : 'disabled'}></td>
+                        <td><input type="number" value="${drug.quantity}" data-id="${drug.id}" class="quantity-input" ${drug.isEditing ? '' : 'disabled'}></td>
+                        <td>
+                            <select data-id="${drug.id}" class="status-select" ${drug.isEditing ? '' : 'disabled'}>
+                                <option value="pending" ${drug.status === 'pending' ? 'selected' : ''}>Pending</option>
+                                <option value="confirmed" ${drug.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
+                            </select>
+                        </td>
                         <td class="actions">
-                            <button class="edit-btn" onclick="editRow(${drug.id})">Edit</button>
+                            <button class="edit-btn" onclick="toggleEdit(${drug.id})">${drug.isEditing ? 'Save' : 'Edit'}</button>
                             <button class="delete-btn" onclick="deleteRow(${drug.id})">Delete</button>
                         </td>
                     `;
                     drugDataContainer.appendChild(row);
                 });
             }
-        });
+        }
 
-        function editRow(id) {
-            const medicineInput = document.querySelector(`input[data-id="${id}"]`);
-            medicineInput.disabled = !medicineInput.disabled;
-            const quantityInput = document.querySelector(`input[data-id="${id}"]`);
-            quantityInput.disabled = !quantityInput.disabled;
+        function toggleEdit(id) {
+            const drug = drugOrders.find(drug => drug.id === id);
+            if (drug.isEditing) {
+                drug.medicine = document.querySelector(`input.medicine-input[data-id="${id}"]`).value;
+                drug.quantity = parseInt(document.querySelector(`input.quantity-input[data-id="${id}"]`).value, 10);
+                drug.status = document.querySelector(`select.status-select[data-id="${id}"]`).value;
+            }
+            drug.isEditing = !drug.isEditing;
+            renderDrugOrders();
         }
 
         function deleteRow(id) {
-            drugStock = drugStock.filter(drug => drug.id !== id);
-            document.getElementById('drugData').innerHTML = '';
-            drugStock.forEach(drug => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${drug.id}</td>
-                    <td><input type="text" value="${drug.medicine}" data-id="${drug.id}" class="medicine-input"></td>
-                    <td><input type="number" value="${drug.quantity}" data-id="${drug.id}" class="quantity-input"></td>
-                    <td class="actions">
-                        <button class="edit-btn" onclick="editRow(${drug.id})">Edit</button>
-                        <button class="delete-btn" onclick="deleteRow(${drug.id})">Delete</button>
-                    </td>
-                `;
-                document.getElementById('drugData').appendChild(row);
-            });
+            drugOrders = drugOrders.filter(drug => drug.id !== id);
+            renderDrugOrders();
         }
 
         function saveData() {
             // Save functionality implementation (e.g., send the updated data to the backend)
-            alert('Save functionality to be implemented');
+            alert('Data saved successfully!');
         }
     </script>
 </body>
