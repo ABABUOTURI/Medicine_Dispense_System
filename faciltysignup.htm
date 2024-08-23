@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facility Registration</title>
+    <style>
+        /* Basic CSS styles for the registration form */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .signup-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            max-width: 400px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .signup-card {
+            width: 100%;
+        }
+
+        .signup-card h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 90%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .hint {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #888;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #008080;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #87CEEB;
+            color: #008080;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-card">
+            <h2>Registration of Facilities</h2>
+            <form id="facilitySignupForm" class="signup-form">
+                <!-- Facility Name Input -->
+                <div class="form-group">
+                    <label for="facilityName">Facility Name:</label>
+                    <input type="text" id="facilityName" name="facilityName">
+                    <small id="facilityNameHint" class="hint">Please enter the facility name.</small>
+                </div>
+
+                <!-- City Input -->
+                <div class="form-group">
+                    <label for="city">City:</label>
+                    <input type="text" id="city" name="city">
+                    <small id="cityHint" class="hint">Please enter the city where the facility is located.</small>
+                </div>
+
+                <!-- Address Input -->
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <input type="text" id="address" name="address">
+                    <small id="addressHint" class="hint">Please enter the facility's address.</small>
+                </div>
+
+                <!-- Role Selection Dropdown -->
+                <div class="form-group">
+                    <label for="facilityRole">Facility Role:</label>
+                    <select id="facilityRole" name="facilityRole">
+                        <option value="">Select Role</option>
+                        <option value="Hospital">Hospital</option>
+                        <option value="Pharmacy">Pharmacy</option>
+                    </select>
+                    <small id="roleHint" class="hint">Please select the facility role.</small>
+                </div>
+
+                <button type="submit">Register Facility</button>
+            </form>
+            <a href="Login.htm">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('facilitySignupForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Retrieve form data
+            const facilityName = document.getElementById('facilityName').value.trim();
+            const city = document.getElementById('city').value.trim();
+            const address = document.getElementById('address').value.trim();
+            const facilityRole = document.getElementById('facilityRole').value.trim();
+
+            // Simple validation
+            if (!facilityName) {
+                alert('Please enter the facility name.');
+                return;
+            }
+            if (!city) {
+                alert('Please enter the city.');
+                return;
+            }
+            if (!address) {
+                alert('Please enter the facility address.');
+                return;
+            }
+            if (!facilityRole) {
+                alert('Please select the facility role.');
+                return;
+            }
+
+            // Process the form data
+            alert('Facility registered successfully!');
+
+            // Here, you could add the logic to send this data to the server
+        });
+    </script>
+</body>
+</html>

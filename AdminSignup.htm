@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Signup</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="signup-container">
+        <div class="signup-card">
+            <h2>Registration of Health Practitioners</h2>
+            <form id="signupForm" class="signup-form">
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" id="firstName" name="firstName">
+                    <small id="firstNameHint" class="hint">Please enter your first name.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="secondName">Second Name:</label>
+                    <input type="text" id="secondName" name="secondName">
+                    <small id="secondNameHint" class="hint">Please enter your second name.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email">
+                    <small id="emailHint" class="hint">Please enter a valid email (e.g., username@gmail.com).</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number:</label>
+                    <input type="tel" id="phoneNumber" name="phoneNumber">
+                    <small id="phoneHint" class="hint">Please enter a valid 10-digit phone number.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password">
+                    <small id="passwordHint" class="hint">Please enter a strong password.</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="userRole">User Role:</label>
+                    <select id="userRole" name="userRole">
+                        <option value="">Select Role</option>
+                        <option value="Doctor">Doctor</option>
+                        <option value="Pharmacist">Pharmacist</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                    <small id="roleHint" class="hint">Please select your role.</small>
+                </div>
+
+                <button type="submit">Register</button>
+            </form>
+            <a href="Login.htm">Already have an account? Login</a>
+        </div>
+    </div>
+
+    <!-- Link to external JavaScript files -->
+    <script src="admin.js"></script>
+</body>
+</html>

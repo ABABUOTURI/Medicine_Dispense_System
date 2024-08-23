@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Issued Medication Page</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Floating header styling */
+        .floating-header {
+            position: fixed;
+            top: 15px;
+            width: 95%;
+            background-color: #fff;
+            color: #D3D3D3;
+            border-radius: 20px;
+            padding: 22px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
+
+        .floating-header .profile-icon {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-icon img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 200px;
+            background-color: #008080;
+            position: fixed;
+            top: 100px; /* Below the header */
+            bottom: 0;
+            left: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            color: #008080;
+            height: 50%;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Main content styling */
+        .main-content {
+            background-color: #fff;
+            border-radius: 20px;
+            margin-bottom: 150px;
+            margin-left: 270px; /* Adjust for sidebar width */
+            padding: 20px ;
+            padding-top: 90px; /* Adjust for header height */
+            
+        }
+
+        .main-content h1 {
+            margin-bottom: 20px;
+            color: #008080;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            color: #D3D3D3;
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #008080;
+        }
+
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+        }
+
+        .search-container input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .search-container .search-btn {
+            padding: 10px 20px;
+            background-color: #008080;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 25px;
+            margin-left: 10px;
+        }
+
+        .no-data {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Floating Header -->
+    <div class="floating-header">
+        <h1>Dispensed Drugs</h1>
+        <!--<div class="profile-icon">
+            <a href="#">My Profile</a>
+            <img src="profile-icon.png" alt="Profile Icon">
+        </div>-->
+    </div>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <ul>
+            <li><a href="PharmacistDash.htm">Dashboard</a></li>
+            <!--<li><a href="#">Profile</a></li>-->
+            <li><a href="Drugstock.htm">Drug stock</a></li>
+            <li><a href="DispenseDRug.htm">Dispensed Drugs</a></li>
+            <li><a href="OrderDrugs.htm">Ordered Drugs</a></li>
+            <li><a href="#">Log Out</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1>Issued Drugs to Patients</h1>
+        <div class="search-container">
+            <input type="text" placeholder="Search by Name / Patient Code / Receipt Number">
+            <button class="search-btn"> Search</button>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Patient Code</th>
+                    <th>Second Name</th>
+                    <th>Email</th>
+                    <th>Phone Number</th>
+                    <th>Medicine</th>
+                    <th>Diagnosis</th>
+                    <th>Medication Administered</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody id="patientData">
+                <!-- Patient data rows will be dynamically injected here -->
+            </tbody>
+        </table>
+        <p class="no-data" style="display: none;">No patients found</p>
+    </div>
+
+    <script>
+        // JavaScript to fetch patient data from the Flask backend
+        document.addEventListener('DOMContentLoaded', function () {
+            fetch('/api/patients')
+                .then(response => response.json())
+                .then(data => {
+                    const patientDataContainer = document.getElementById('patientData');
+                    if (data.length === 0) {
+                        document.querySelector('.no-data').style.display = 'block';
+                    } else {
+                        data.forEach(patient => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                                <td>${patient.id}</td>
+                                <td>${patient.first_name}</td>
+                                <td>${patient.last_name}</td>
+                                <td>${patient.email}</td>
+                                <td>${patient.phone_number}</td>
+                                <td>${patient.diagnosis}</td>
+                                <td>${patient.medication_administered}</td>
+                                <td>${patient.date}</td>
+                            `;
+                            patientDataContainer.appendChild(row);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching patient data:', error);
+                });
+        });
+    </script>
+
+</body>
+</html>

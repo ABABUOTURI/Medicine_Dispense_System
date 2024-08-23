@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Page</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .floating-header {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #fff;
+            color: #D3D3D3;
+            border-radius: 20px;
+            padding: 22px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #008080;
+            position: fixed;
+            top: 100px;
+            bottom: 0;
+            left: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            color: #fff;
+            height: 50%;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .prescription-container {
+            margin-left: 240px;
+            padding: 40px;
+            width: 70%;
+            margin-top: 20%;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .prescription-container h2 {
+            color: #008080;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+        }
+
+        .form-group input[type="text"], .form-group textarea {
+            width: 90%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-buttons {
+            margin-top: 2px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-buttons button {
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .form-buttons .delete-btn {
+            background-color: #ff6347;
+        }
+
+        .history-button {
+            margin-bottom: 20px;
+            text-align: right;
+        }
+
+        .history-button button {
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .patient-history {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .patient-history th, .patient-history td {
+            padding: 12px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+
+        .patient-history th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        .otp-details {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .otp-details p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="floating-header">
+            <h1>Prescription Page</h1>
+        </div>
+
+        <div class="sidebar">
+            <ul>
+                <li><a href="DoctorDash.htm">Dashboard</a></li>
+                <li><a href="PatientRecords.htm">Profile</a></li>
+                <li><a href="Appointments.htm">Onboarded</a></li>
+                <li><a href="onboarding.htm">Onboarding</a></li>
+                <li><a href="#">Log Out</a></li>
+            </ul>
+        </div>
+
+        <div class="prescription-container">
+            <h2>Write a Prescription</h2>
+            <form id="prescriptionForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Second Name</label>
+                        <input type="text" id="lastName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prescription">Enter Prescription</label>
+                        <textarea id="prescription" rows="4" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="comment">Enter Comment</label>
+                        <textarea id="comment" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="form-buttons">
+                    <button type="button" onclick="sendPrescription()">Send</button>
+                    <button type="button" onclick="editPrescription()">Edit</button>
+                    <button type="button" onclick="updatePrescription()">Update</button>
+                    <button type="button" class="delete-btn" onclick="deletePrescription()">Delete</button>
+                </div>
+            </form>
+
+            <div id="otpContainer" class="otp-details" style="display:none;">
+                <p id="otpCode"></p>
+                <p id="creationTime"></p>
+                <p id="expirationTime"></p>
+            </div>
+
+            <h4 style="text-align: center; margin-top: 25px;color: #008080;">Patient History</h4>
+            <table class="patient-history">
+                <thead>
+                    <tr>
+                        <th>Prescription ID</th>
+                        <th>Patient Name</th>
+                        <th>Prescription</th>
+                        <th>Comment</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody id="historyList">
+                    <!-- History items will be injected here -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script>
+        function sendPrescription() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const prescription = document.getElementById('prescription').value;
+            const comment = document.getElementById('comment').value;
+
+            // Generate OTP
+            const otp = firstName.charAt(0) + lastName.charAt(0) + Math.floor(1000 + Math.random() * 9000);
+            const creationTime = new Date();
+            const expirationTime = new Date(creationTime.getTime() + 12 * 60 * 60 * 1000); // 12 hours later
+
+            // Display OTP and details
+            document.getElementById('otpCode').textContent = `Your OTP code is: ${otp}`;
+            document.getElementById('creationTime').textContent = `Created at: ${creationTime.toLocaleString()}`;
+            document.getElementById('expirationTime').textContent = `Expires at: ${expirationTime.toLocaleString()}`;
+            document.getElementById('otpContainer').style.display = 'block';
+
+            // Send OTP via SMS or Email (Placeholder)
+            // Implement actual logic to send OTP via SMS or Email here
+
+            // Add to history
+            addToHistory(firstName, lastName, prescription, comment);
+
+            // Show success message
+            alert('Prescription sent successfully!');
+        }
+
+        function addToHistory(firstName, lastName, prescription, comment) {
+            const historyList = document.getElementById('historyList');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${Math.floor(Math.random() * 1000)}</td>
+                <td>${firstName} ${lastName}</td>
+                <td>${prescription}</td>
+                <td>${comment}</td>
+                                <td>${new Date().toLocaleDateString()}</td>
+            `;
+            historyList.appendChild(row);
+        }
+
+        function editPrescription() {
+            alert('Edit functionality activated.');
+            // Implement the logic to allow editing of the prescription form
+        }
+
+        function updatePrescription() {
+            alert('Update functionality activated.');
+            // Implement the logic to update the prescription information
+        }
+
+        function deletePrescription() {
+            alert('Delete functionality activated.');
+            // Implement the logic to delete the prescription
+        }
+
+        function viewHistory() {
+            alert('Displaying patient history.');
+            // Implement the logic to view patient's past prescriptions
+        }
+    </script>
+</body>
+</html>
+

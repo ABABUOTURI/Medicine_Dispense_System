@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Drugs Page</title>
+    
+    <style>
+        .floating-header {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #D3D3D3;
+            color: #008080;
+            border-radius: 20px;
+            padding: 22px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
+
+        .floating-header .profile-icon {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-icon img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 200px;
+            background-color: #008080;
+            position: fixed;
+            top: 100px;
+            bottom: 0;
+            left: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            color: #fff;
+            height: 50%;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .search-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-container input {
+            width: calc(100% - 120px);
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .search-container .search-btn {
+            background-color: #008080;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .search-container .search-btn:hover {
+            background-color: #87CEEB;
+            color: #008080;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 5px 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #008080;
+            color: white;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #008080;
+            margin-top: 20px;
+            padding: 5px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .actions button {
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background-color: #008080;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #FF6347;
+            color: white;
+        }
+
+        .save-btn {
+            background-color: #008080;
+            color: white;
+            margin-top: 20px;
+            padding: 10px 20px;
+            display: block;
+            width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 25px;
+        }
+
+        .save-btn:hover {
+            background-color: #87CEEB;
+            color: #008080;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="floating-header">
+            <h1>Order Drugs</h1>
+            <!--<div class="profile-icon">
+                <a href="#">My Profile</a>
+                <img src="profile-icon.png" alt="Profile Icon">
+            </div>-->
+        </div>
+
+        <div class="sidebar" style="margin-top: 10px;">
+            <ul>
+                <li><a href="PharmacistDash.htm">Dashboard</a></li>
+                <li><a href="Drugstock.htm">Drug Stock</a></li>
+                <li><a href="DispenseDRug.htm">Dispensed Drugs</a></li>
+                <li><a href="OrderDrugs.htm">Order Drugs</a></li>
+                <li><a href="#">Log Out</a></li>
+            </ul>
+        </div>
+
+        <!-- Centered Heading outside the dashboard-container -->
+
+        <div style="width: 1000px; background-color: #D3D3D3;margin-left: 280px;border-radius: 5px;margin-top: 8%;">
+            <div class="dashboard-container" style="width: 900px; margin-top: 10%;padding: 3%;">
+                <div style="max-width: 100%;">
+                 <div class="search-container">
+                     <input type="text" placeholder="Search by Medicine Name or ID">
+                     <button class="search-btn">Search</button>
+                 </div>
+                 <table>
+                     <thead>
+                         <tr>
+                             <th>Id</th>
+                             <th>Medicine</th>
+                             <th>Quantity</th>
+                             <th>Actions</th>
+                         </tr>
+                     </thead>
+                     <tbody id="drugData">
+                         <!-- Drug stock data rows will be dynamically injected here -->
+                     </tbody>
+                 </table>
+                 <p class="no-data" style="display: none;">No drugs found in stock</p>
+                 <button class="save-btn" onclick="saveData()">Save All</button>
+                </div>
+             </div>
+        </div>
+    </main>
+
+    <script>
+        // Sample data for drug stock, you would normally fetch this from your backend
+        let drugStock = [
+            { id: 1, medicine: 'Paracetamol', quantity: 100 },
+            { id: 2, medicine: 'Ibuprofen', quantity: 50 },
+            { id: 3, medicine: 'Amoxicillin', quantity: 75 },
+            { id: 4, medicine: 'Cetirizine', quantity: 200 },
+            { id: 5, medicine: 'Piriton', quantity: 200 },
+            { id: 6, medicine: 'ABZ', quantity: 200 },
+            { id: 7, medicine: 'Brufen', quantity: 200 },
+            { id: 8, medicine: 'Brufen', quantity: 200 },
+            { id: 9, medicine: 'Brufen', quantity: 200 },
+            { id: 10, medicine: 'Brufen', quantity: 200 },
+        ];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const drugDataContainer = document.getElementById('drugData');
+
+            if (drugStock.length === 0) {
+                document.querySelector('.no-data').style.display = 'block';
+            } else {
+                drugStock.forEach(drug => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${drug.id}</td>
+                        <td><input type="text" value="${drug.medicine}" data-id="${drug.id}" class="medicine-input"></td>
+                        <td><input type="number" value="${drug.quantity}" data-id="${drug.id}" class="quantity-input"></td>
+                        <td class="actions">
+                            <button class="edit-btn" onclick="editRow(${drug.id})">Edit</button>
+                            <button class="delete-btn" onclick="deleteRow(${drug.id})">Delete</button>
+                        </td>
+                    `;
+                    drugDataContainer.appendChild(row);
+                });
+            }
+        });
+
+        function editRow(id) {
+            const medicineInput = document.querySelector(`input[data-id="${id}"]`);
+            medicineInput.disabled = !medicineInput.disabled;
+            const quantityInput = document.querySelector(`input[data-id="${id}"]`);
+            quantityInput.disabled = !quantityInput.disabled;
+        }
+
+        function deleteRow(id) {
+            drugStock = drugStock.filter(drug => drug.id !== id);
+            document.getElementById('drugData').innerHTML = '';
+            drugStock.forEach(drug => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${drug.id}</td>
+                    <td><input type="text" value="${drug.medicine}" data-id="${drug.id}" class="medicine-input"></td>
+                    <td><input type="number" value="${drug.quantity}" data-id="${drug.id}" class="quantity-input"></td>
+                    <td class="actions">
+                        <button class="edit-btn" onclick="editRow(${drug.id})">Edit</button>
+                        <button class="delete-btn" onclick="deleteRow(${drug.id})">Delete</button>
+                    </td>
+                `;
+                document.getElementById('drugData').appendChild(row);
+            });
+        }
+
+        function saveData() {
+            // Save functionality implementation (e.g., send the updated data to the backend)
+            alert('Save functionality to be implemented');
+        }
+    </script>
+</body>
+</html>

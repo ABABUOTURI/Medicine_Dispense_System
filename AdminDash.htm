@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        .floating-header {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #D3D3D3;
+            color: #D3D3D3;
+            border-radius: 20px;
+            padding: 20px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #008080;
+            position: fixed;
+            top: 120px;
+            bottom: 0;
+            left: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            color: #fff;
+            height: 50%;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+            cursor: pointer;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .sidebar ul ul {
+            list-style: none;
+            padding-left: 20px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .sidebar ul ul li {
+            margin: 10px 0;
+        }
+
+        .sidebar ul ul li a {
+            font-size: 16px;
+        }
+
+        .dashboard-container {
+            margin-left: 270px;
+            padding: 40px;
+            width: 70%;
+            margin-top: 10%;
+            background-color: #D3D3D3;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-container h2 {
+            color: #008080;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .registration-form,
+        .user-list-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .registration-form label,
+        .user-list-container label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .registration-form input[type="text"],
+        .registration-form input[type="email"],
+        .registration-form select,
+        .user-list-container input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            text-align: center;
+        }
+
+        .registration-form input[type="submit"],
+        .user-list-container button {
+            width: 80%;
+            padding: 10px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .registration-form input[type="submit"]:hover,
+        .user-list-container button:hover {
+            background-color: #006666;
+        }
+
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .user-table th,
+        .user-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .user-table th {
+            background-color: #f4f4f4;
+        }
+
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .button-container button {
+            flex: 1 1 calc(50% - 10px);
+            max-width: 40%;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="floating-header">
+            <h1>Admin Dashboard</h1>
+        </div>
+
+        <div class="sidebar">
+            <ul>
+                <li>
+                    <a href="AdminDash.htm" id="manageUsersToggle">Manage Users</a>
+                    <ul id="manageUsersList">
+                        <li><a href="#" onclick="showUserList('hospitals')">Hospital</a></li>
+                        <li><a href="#" onclick="showUserList('pharmacies')">Pharmacy</a></li>
+                        <li><a href="#" onclick="showUserList('patients')">Patients</a></li>
+                        <li><a href="#" onclick="showUserList('doctors')">Doctors</a></li>
+                        <li><a href="#" onclick="showUserList('pharmacists')">Pharmacists</a></li>
+                    </ul>
+                </li>
+                <li><a href="#" onclick="showRegistrationForm()">Registration</a></li>
+                <li><a href="#">Log Out</a></li>
+            </ul>
+        </div>
+
+        <div class="dashboard-container" id="contentContainer">
+            <div id="userListContainer">
+                <!-- User list tables here -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.getElementById('manageUsersToggle').addEventListener('click', function(event) {
+            event.preventDefault();
+            const manageUsersList = document.getElementById('manageUsersList');
+            if (manageUsersList.style.display === 'none' || manageUsersList.style.display === '') {
+                manageUsersList.style.display = 'block';
+            } else {
+                manageUsersList.style.display = 'none';
+            }
+        });
+
+        function showUserList(type) {
+            document.querySelectorAll('.user-list-container').forEach(list => {
+                list.classList.add('hidden');
+            });
+
+            const listToShow = document.getElementById(`${type}List`);
+            if (listToShow) {
+                listToShow.classList.remove('hidden');
+            } else {
+                switch(type) {
+                    case 'hospitals':
+                        showHospitalList();
+                        break;
+                    case 'pharmacies':
+                        showPharmacyList();
+                        break;
+                    case 'patients':
+                        showPatientList();
+                        break;
+                    case 'doctors':
+                        showDoctorList();
+                        break;
+                    case 'pharmacists':
+                        showPharmacistList();
+                        break;
+                }
+            }
+        }
+
+        function showHospitalList() {
+            const hospitalListHtml = `
+                <h2>Hospital List</h2>
+                <div class="user-list-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Hospital Name</th>
+                                <th>City</th>
+                                <th>Address</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Hospital A</td>
+                                <td>City A</td>
+                                <td>Address A</td>
+                                <td>Hospital</td>
+                                <td>
+                                    <div class="button-container">
+                                        <button onclick="showAddDoctorsForm()">Add Doctors</button>
+                                        <button onclick="showDoctorList()">List Doctors</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Hospital B</td>
+                                <td>City B</td>
+                                <td>Address B</td>
+                                <td>Hospital</td>
+                                <td>
+                                    <div class="button-container">
+                                        <button onclick="showAddDoctorsForm()">Add Doctors</button>
+                                        <button onclick="showDoctorList()">List Doctors</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Hospital C</td>
+                                <td>City C</td>
+                                <td>Address C</td>
+                                <td>Hospital</td>
+                                <td>
+                                    <div class="button-container">
+                                        <button onclick="showAddDoctorsForm()">Add Doctors</button>
+                                        <button onclick="showDoctorList()">List Doctors</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            document.getElementById('userListContainer').innerHTML = hospitalListHtml;
+        }
+
+        function showPharmacyList() {
+            const pharmacyListHtml = `
+                <h2>Pharmacy List</h2>
+                <div class="user-list-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Pharmacy Name</th>
+                                <th>City</th>
+                                <th>Address</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pharmacy A</td>
+                                <td>City A</td>
+                                <td>Address A</td>
+                                <td>Pharmacy</td>
+                                <td>
+                                    <div class="button-container">
+                                        <button onclick="showAddPharmacistsForm()">Add Pharmacists</button>
+                                        <button onclick="showPharmacistList()">List Pharmacists</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pharmacy B</td>
+                                <td>City B</td>
+                                <td>Address B</td>
+                                <td>Pharmacy</td>
+                                <td>
+                                    <div class="button-container">
+                                        <button onclick="showAddPharmacistsForm()">Add Pharmacists</button>
+                                        <button onclick="showPharmacistList()">List Pharmacists</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pharmacy C</td>
+                                <td>City C</td>
+                                <td>Address C</td>
+                                <td>Pharmacy</td>
+                                <td>
+                                    <div class="button-container">
+                                        <button onclick="showAddPharmacistsForm()">Add Pharmacists</button>
+                                        <button onclick="showPharmacistList()">List Pharmacists</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            document.getElementById('userListContainer').innerHTML = pharmacyListHtml;
+        }
+
+        function showPatientList() {
+            const patientListHtml = `
+                <h2>Patient List</h2>
+                <div class="user-list-container">
+                    <table class="user-table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Age</th>
+                                <th>Address</th>
+                                <th>Role</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Patient A</td>
+                                <td>30</td>
+                                <td>Address A</td>
+                                <td>Patient</td>
+                                <td>
+                                    <button>Details</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Patient B</td>
+                                <td>40</td>
+                                <td>Address B</td>
+                                <td>Patient</td>
+                                <td>
+                                    <button>Details</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Patient C</td>
+                                <td>50</td>
+                                <td>Address C</td>
+                                <td>Patient</td>
+                                <td>
+                                    <button>Details</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            `;
+            document.getElementById('userListContainer').innerHTML = patientListHtml;
+        }
+
+        function showDoctorList() {
+            const doctorListHtml = `
+               <h2>Doctor List</h2>
+
+<div class="user-list-container">
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Second Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Example data rows -->
+            <tr>
+                <td>John</td>
+                <td>Doe</td>
+                <td>john.doe@example.com</td>
+                <td>(555) 123-4567</td>
+                <td>Doctor</td>
+            </tr>
+            <tr>
+                <td>Jane</td>
+                <td>Smith</td>
+                <td>jane.smith@example.com</td>
+                <td>(555) 987-6543</td>
+                <td>Doctor</td>
+            </tr>
+            <tr>
+                <td>Emily</td>
+                <td>Jones</td>
+                <td>emily.jones@example.com</td>
+                <td>(555) 456-7890</td>
+                <td>Doctor</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+            `;
+            document.getElementById('userListContainer').innerHTML = doctorListHtml;
+        }
+
+        function showPharmacistList() {
+            const pharmacistListHtml = `
+              <h2>Pharmacist List</h2>
+
+<div class="user-list-container">
+    <table class="user-table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Second Name</th>
+                <th>Email</th>
+                <th>Phone Number</th>
+                <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Example data rows -->
+            <tr>
+                <td>John</td>
+                <td>Doe</td>
+                <td>john.doe@example.com</td>
+                <td>(555) 123-4567</td>
+                <td>Pharmacist</td>
+            </tr>
+            <tr>
+                <td>Jane</td>
+                <td>Smith</td>
+                <td>jane.smith@example.com</td>
+                <td>(555) 987-6543</td>
+                <td>Pharmacist</td>
+            </tr>
+            <tr>
+                <td>Emily</td>
+                <td>Jones</td>
+                <td>emily.jones@example.com</td>
+                <td>(555) 456-7890</td>
+                <td>Doctor</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+            `;
+            document.getElementById('userListContainer').innerHTML = pharmacistListHtml;
+        }
+
+        function showRegistrationForm() {
+            const registrationFormHtml = `
+               <h2>Registration Form</h2>
+<div class="registration-form" style="">
+    <form>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" placeholder="Enter your city" required>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" name="address" placeholder="Enter your address" required>
+
+        <label for="role">Role:</label>
+        <select id="role" name="role" required>
+            <option value="pharmacy">Pharmacy</option>
+            <option value="hospital">Hospital</option>
+        </select>
+
+        <input type="submit" value="Register">
+    </form>
+</div>
+
+
+            `;
+            document.getElementById('userListContainer').innerHTML = registrationFormHtml;
+        }
+
+        function showAddDoctorsForm() {
+            const addDoctorsFormHtml = `
+                <h2>Add Doctors Form</h2>
+                <div class="registration-form">
+    <form>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="secondName">Second Name:</label>
+        <input type="text" id="secondName" name="secondName" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" required>
+
+        <label for="role">Role:</label>
+        <select id="role" name="role" required>
+            <option value="doctor">Doctor</option>
+            <option value="nurse">Pharmacist</option>
+            <option value="admin">Admin</option>
+        </select>
+
+
+
+        <input type="submit" value="Add Doctor">
+    </form>
+</div>
+
+            `;
+            document.getElementById('userListContainer').innerHTML = addDoctorsFormHtml;
+        }
+
+        function showAddPharmacistsForm() {
+            const addPharmacistsFormHtml = `
+               <h2>Add Pharmacists</h2>
+<div class="registration-form">
+    <form>
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" placeholder="Enter first name" required>
+
+        <label for="secondName">Second Name:</label>
+        <input type="text" id="secondName" name="secondName" placeholder="Enter second name" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" placeholder="Enter email address" required>
+
+        <label for="phoneNumber">Phone Number:</label>
+        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number" required>
+
+        <label for="role">Role:</label>
+        <select id="role" name="role" required>
+            <option value="pharmacist">Pharmacist</option>
+            <option value="otherRole">Other Role</option>
+        </select>
+
+        <input type="submit" value="Add Pharmacist">
+    </form>
+</div>
+
+            `;
+            document.getElementById('userListContainer').innerHTML = addPharmacistsFormHtml;
+        }
+    </script>
+</body>
+
+</html>

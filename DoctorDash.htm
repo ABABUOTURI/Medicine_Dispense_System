@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor's Dashboard</title>
+    <style>
+        .floating-header {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #D3D3D3;
+            color: #D3D3D3;
+            border-radius: 20px;
+            padding: 20px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #008080;
+            position: fixed;
+            top: 120px;
+            bottom: 0;
+            left: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            color: #fff;
+            height: 50%;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .dashboard-container {
+            margin-left: 270px;
+            padding: 40px;
+            width: 70%;
+            margin-top: 10%;
+            background-color: #D3D3D3;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-container h2 {
+            color: #008080;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .search-bar input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .patient-list {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .patient-list th, .patient-list td {
+            background-color: #fff;
+            padding: 12px;
+            border: 1px solid #DDD;
+            text-align: left;
+        }
+
+        .patient-list th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        .patient-list td a {
+            color: #008080;
+            text-decoration: none;
+        }
+
+        .patient-list td a:hover {
+            text-decoration: underline;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="floating-header">
+            <h1>Doctor's Dashboard</h1>
+        </div>
+
+        <div class="sidebar">
+            <ul>
+                <li><a href="DoctorDash.htm">Dashboard</a></li>
+                <li><a href="PatientRecords.htm">Profile</a></li>
+                <li><a href="DoctorDash.htm">Onboarded</a></li>
+                <li><a href="onboarding.htm">Onboarding</a></li>
+                <li><a href="#">Log Out</a></li>
+            </ul>
+        </div>
+
+        <!-- Search Bar and Patient List Container -->
+        <div class="dashboard-container">
+            <h1 style="text-align: center; color: #008080;"> Onboarded Patients</h1>
+            <div class="search-bar">
+                <input type="text" id="patientSearch" placeholder="Search by Patient Code or ID">
+                <button onclick="filterPatients()">Search</button>
+            </div>
+            <div id="patientListContainer">
+                <table class="patient-list">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>First Name</th>
+                            <th>Second Name</th>
+                            <th>Patient Code</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Date of Birth (DoB)</th>
+                            <th>Location</th>
+                        </tr>
+                    </thead>
+                    <tbody id="patientList">
+                        <!-- Example patient data -->
+                        <tr>
+                            <td>1</td>
+                            <td>John</td>
+                            <td>Doe</td>
+                            <td>PC001</td>
+                            <td>john.doe@example.com</td>
+                            <td>+1234567890</td>
+                            <td>1980-01-01</td>
+                            <td>New York</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>Jane</td>
+                            <td>Smith</td>
+                            <td>PC002</td>
+                            <td>jane.smith@example.com</td>
+                            <td>+0987654321</td>
+                            <td>1985-05-15</td>
+                            <td>Los Angeles</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>Mike</td>
+                            <td>Johnson</td>
+                            <td>PC003</td>
+                            <td>mike.johnson@example.com</td>
+                            <td>+1122334455</td>
+                            <td>1990-12-20</td>
+                            <td>Chicago</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </main>
+
+    <script>
+        function viewPatient(id) {
+            alert('Displaying details for Patient ID: ' + id);
+            // Implement the logic to display patient details in a separate section or modal.
+        }
+
+        function filterPatients() {
+            const searchQuery = document.getElementById('patientSearch').value.toLowerCase();
+            const patients = document.querySelectorAll('#patientList tr');
+            patients.forEach(patient => {
+                const patientCode = patient.querySelector('td:first-child a').textContent.toLowerCase();
+                if (patientCode.includes(searchQuery)) {
+                    patient.style.display = '';
+                } else {
+                    patient.style.display = 'none';
+                }
+            });
+        }
+
+        function goToPrescriptionPage(patientId) {
+            // Navigate to the prescription page with patientId as a query parameter
+            window.location.href = `prescription.htm?patientId=${patientId}`;
+        }
+    </script>
+</body>
+</html>

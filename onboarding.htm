@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Process</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .floating-header {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #fff;
+            color: #D3D3D3;
+            border-radius: 20px;
+            padding: 22px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 200px;
+            background-color: #008080;
+            position: fixed;
+            top: 100px;
+            bottom: 0;
+            left: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            color: #fff;
+            height: 50%;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .dashboard-container {
+            margin-left: 240px;
+            padding: 40px;
+            margin-top: 200px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 70%;
+            max-width: 600px;
+        }
+
+        .dashboard-container h2 {
+            color: #008080;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-grid label {
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .form-grid input[type="text"],
+        .form-grid input[type="email"],
+        .form-grid input[type="date"],
+        .form-grid select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .dashboard-container button {
+            width: 100%;
+            padding: 10px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            font-size: 18px;
+            cursor: pointer;
+            grid-column: span 2; /* Makes the button span across two columns */
+        }
+
+        .dashboard-container button:hover {
+            background-color: #006666;
+        }
+
+        #successMessage {
+            display: none;
+            text-align: center;
+            color: green;
+            margin-top: 20px;
+            font-weight: bold;
+            grid-column: span 2; /* Makes the success message span across two columns */
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="floating-header">
+            <h1>Registration Process</h1>
+        </div>
+
+        <div class="sidebar">
+            <ul>
+                <li><a href="DoctorDash.htm">Dashboard</a></li>
+                <li><a href="PatientRecords.htm">Profile</a></li>
+                <li><a href="DoctorDash.htm">Onboarded</a></li>
+                <li><a href="onboarding.htm">Onboarding</a></li>
+                <li><a href="#">Log Out</a></li>
+            </ul>
+        </div>
+
+        <!-- Registration Form -->
+        <div class="dashboard-container">
+            <h2>Onboard User</h2>
+            <form id="registrationForm" class="form-grid">
+                <div>
+                    <label for="firstName">First Name</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Enter First Name" required>
+                </div>
+
+                <div>
+                    <label for="secondName">Second Name</label>
+                    <input type="text" id="secondName" name="secondName" placeholder="Enter Second Name" required>
+                </div>
+
+                <div>
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="Enter Email" required>
+                </div>
+
+                <div>
+                    <label for="phoneNumber">Phone Number</label>
+                    <input type="number" id="phoneNumber" name="phoneNumber" placeholder="Enter Phone Number" min="0" required>
+                </div>
+
+
+                <div>
+                    <label for="patientcode">Patient Code</label>
+                    <input type="number" id="patientcode" name="patientcode" placeholder="Enter Patient code" min="0">
+                </div>
+
+                <div>
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" id="dob" name="dob" >
+                </div>
+
+                <div>
+                    <label for="location">Location</label>
+                    <input type="text" id="location" name="location" placeholder="Enter Location" >
+                </div>
+
+                <div>
+                    <label for="userRole">User Role</label>
+                    <select id="userRole" name="userRole" required>
+                        <option value="Doctor">Doctor</option>
+                        <option value="Pharmacist">Pharmacist</option>
+                        <option value="Patient">Patient</option>
+                        <option value="Admin">Admin</option>
+                    </select>
+                </div>
+
+                <button type="submit">Register</button>
+            </form>
+            <div id="successMessage">User registered successfully!</div>
+        </div>
+    </main>
+
+    <script>
+        // Function to show and hide success message
+        function showSuccessMessage() {
+            const successMessage = document.getElementById('successMessage');
+            successMessage.style.display = 'block';
+    
+            setTimeout(function () {
+                successMessage.style.display = 'none';
+            }, 2000);
+        }
+    
+        // Function to reset the form
+        function resetForm() {
+            document.getElementById('registrationForm').reset();
+        }
+    
+        // Handle form submission
+        document.getElementById('registrationForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            showSuccessMessage();
+            resetForm(); // Reset the form after displaying the success message
+        });
+    </script>
+    
+</body>
+
+</html>

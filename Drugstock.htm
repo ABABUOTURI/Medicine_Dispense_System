@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Stock Page</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .floating-header {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #fff;
+            color: #D3D3D3;
+            border-radius: 20px;
+            padding: 22px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
+
+        .floating-header .profile-icon {
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-icon img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+
+        /* Sidebar styling */
+        .sidebar {
+            width: 200px;
+            background-color: #008080;
+            position: fixed;
+            top: 100px;
+            bottom: 0;
+            left: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            color: #fff;
+            height: 50%;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .search-container {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .search-container input {
+            width: calc(100% - 120px);
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .search-container .search-btn {
+            background-color: #008080;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        .search-container .search-btn:hover {
+            background-color: #87CEEB;
+            color: #008080;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #008080;
+            color: white;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #008080;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <div class="floating-header">
+            <h1>Drug Stock</h1>
+            <!--<div class="profile-icon">
+                <a href="#">My Profile</a>
+                <img src="profile-icon.png" alt="Profile Icon">
+            </div>-->
+        </div>
+
+        <div class="sidebar">
+            <ul>
+                <li><a href="PharmacistDash.htm">Dashboard</a></li>
+                <li><a href="Drugstock.htm">Drug stock</a></li>
+                <li><a href="DispenseDRug.htm">Dispensed Drugs</a></li>
+                <li><a href="OrderDrugs.htm">Ordered Drugs</a></li>
+                <li><a href="#">Log Out</a></li>
+            </ul>
+        </div>
+
+        <!-- Centered Heading outside the dashboard-container -->
+
+        <div class="dashboard-container" style=" width: 900px;margin-top: 15%; background-color: #fff;">
+           <div style="width: 100%;border-radius: 5px;">
+            <div class="search-container">
+                <input type="text" placeholder="Search by Medicine Name or ID">
+                <button class="search-btn">Search</button>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Medicine</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody id="drugData">
+                    <!-- Drug stock data rows will be dynamically injected here -->
+                </tbody>
+            </table>
+            <p class="no-data" style="display: none;">No drugs found in stock</p>
+           </div>
+        </div>
+    </main>
+
+    <script>
+        // Sample data for drug stock, you would normally fetch this from your backend
+        const drugStock = [
+            { id: 1, medicine: 'Paracetamol', quantity: 100 },
+            { id: 2, medicine: 'Ibuprofen', quantity: 50 },
+            { id: 3, medicine: 'Amoxicillin', quantity: 75 },
+            { id: 4, medicine: 'Cetirizine', quantity: 200 },
+            { id: 5, medicine: 'Piriton', quantity: 200 },
+            { id: 6, medicine: 'ABZ', quantity: 200 },
+            { id: 7, medicine: 'Brufen', quantity: 200 },
+            { id: 8, medicine: 'Brufen', quantity: 200 },
+            { id: 9, medicine: 'Brufen', quantity: 200 },
+            { id: 10, medicine: 'Brufen', quantity: 200 },
+        ];
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const drugDataContainer = document.getElementById('drugData');
+
+            if (drugStock.length === 0) {
+                document.querySelector('.no-data').style.display = 'block';
+            } else {
+                drugStock.forEach(drug => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${drug.id}</td>
+                        <td>${drug.medicine}</td>
+                        <td>${drug.quantity}</td>
+                    `;
+                    drugDataContainer.appendChild(row);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

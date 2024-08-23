@@ -1,0 +1,419 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    /*background: linear-gradient(135deg, #008080, #87CEEB,#008080, #D3D3D3);*/
+    background-color: #D3D3D3;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/*---------------login page start--------------*/
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.login-card {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+}
+
+.login-card h2 {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #008080;
+}
+.login-card h1{
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #008080;
+}
+
+.login-card label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #333;
+}
+
+.login-card input {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.login-card button {
+    width: 100%;
+    padding: 0.5rem;
+    background-color: #008080;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.login-card a {
+    display: block;
+    text-align: center;
+    margin-top: 1rem;
+    color: #008080;
+    text-decoration: none;
+}
+
+.login-card a:hover {
+    text-decoration: underline;
+}
+/*---------------login page end--------------*/
+/*---------------AdminSignup page start--------------*/
+
+
+.signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    width: 100%; /* Ensure full width for responsiveness */
+    padding: 20px;
+}
+
+.signup-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%; /* Ensure card takes up full width of container */
+    max-width: 900px; /* Set a maximum width */
+}
+
+h2 {
+    color: #008080;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.signup-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px; /* Space between columns and rows */
+    grid-template-rows: repeat(3, auto);
+    padding: 10px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input,
+.form-group select {
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%; /* Ensure inputs fill their container */
+}
+
+.form-group .hint {
+    display: none;
+    color: red;
+    font-size: 0.9em;
+}
+
+button {
+    grid-column: span 2;
+    padding: 10px;
+    background-color: #008080;
+    color: #fff;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1em;
+    margin-top: 20px; /* Space above the button */
+}
+
+button:hover {
+    background-color: #006666;
+}
+
+a {
+    display: block;
+    margin-top: 20px;
+    text-align: center;
+    color: #008080;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+
+/*---------------AdminSignup page end--------------*/
+/*---------------Pharmacist Dash start--------------*/
+
+.dashboard-container {
+   
+    align-items: center;
+    background-color: white;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 0 10%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.centered-heading h1{
+    text-align: center;
+    color: #008080;
+}
+/*.image-container img {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+}*/
+
+.dashboard-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.button {
+    padding: 15px 30px;
+    border-radius: 10px;
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    cursor: pointer;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 150px;
+}
+
+.drug-stock {
+    background-color: #008080;
+}
+
+.dispense-drugs{
+    background-color: #87CEEB;
+    color: #008080;
+}
+
+.order-drugs {
+    background-color: #008080;
+}
+
+.pharmacy-queue {
+    background-color: #87CEEB;
+    color: #008080;
+}
+
+.issue-to-patient {
+    background-color: #87CEEB;
+    color: #008080;
+}
+
+.issue-to-account {
+    background-color: #87CEEB;
+    color: #008080;
+}
+
+.dispense-drugs {
+    background-color: #87CEEB;
+    color: #008080;
+}
+
+.dispensed-summary {
+    background-color: #008080;
+}
+
+.button:hover {
+    opacity: 0.8;
+}
+
+/*---------------Pharmacist Dash End--------------*/
+/*---------------Medication issued start--------------*/
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #D3D3D3;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+.clinic-name {
+    font-size: 18px;
+    color: #555;
+}
+
+nav ul {
+    display: flex;
+    gap: 15px;
+}
+
+nav ul li {
+    list-style: none;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: #008080;
+    font-weight: bold;
+}
+
+.user-info {
+    display: flex;
+    gap: 15px;
+}
+
+.user-info span {
+    font-weight: bold;
+}
+
+.user-info a {
+    text-decoration: none;
+    color: #008080;
+}
+
+main {
+    padding: 20px 0;
+}
+
+h1 {
+    font-size: 22px;
+    color: #ff5722;
+    margin-bottom: 20px;
+}
+
+.search-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.search-container input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.search-container .search-btn {
+    padding: 10px 20px;
+    background-color: #008080;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 15px;
+    text-align: left;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+.no-data {
+    text-align: center;
+    color: #777;
+    margin-top: 20px;
+    display: block; /* Hidden by default */
+}
+
+/*---------------Medication issued end--------------*/
+/*---------------Dispense Drug start--------------*/
+.container {
+    max-width: 800px;
+    margin: auto;
+    background: #87CEEB;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-top: 0;
+}
+
+.medication-info, .otp-comments {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-top: 10px;
+}
+
+input[type="text"], textarea {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #D3D3D3;
+}
+
+button {
+    background-color: #008080;
+    border-radius: 25px;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #87CEEB;
+}
+/*--------------Dispense Drug end------------*/
+
