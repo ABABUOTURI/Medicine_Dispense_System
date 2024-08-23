@@ -247,121 +247,129 @@
             }
         }
 
-        function showHospitalList() {
-            const hospitalListHtml = `
-                <h2>Hospital List</h2>
-                <div class="user-list-container">
-                    <table class="user-table">
-                        <thead>
-                            <tr>
-                                <th>Hospital Name</th>
-                                <th>City</th>
-                                <th>Address</th>
-                                <th>Role</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Hospital A</td>
-                                <td>City A</td>
-                                <td>Address A</td>
-                                <td>Hospital</td>
-                                <td>
-                                    <div class="button-container">
-                                        <button onclick="showAddDoctorsForm()">Add Doctors</button>
-                                        <button onclick="showDoctorList()">List Doctors</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Hospital B</td>
-                                <td>City B</td>
-                                <td>Address B</td>
-                                <td>Hospital</td>
-                                <td>
-                                    <div class="button-container">
-                                        <button onclick="showAddDoctorsForm()">Add Doctors</button>
-                                        <button onclick="showDoctorList()">List Doctors</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Hospital C</td>
-                                <td>City C</td>
-                                <td>Address C</td>
-                                <td>Hospital</td>
-                                <td>
-                                    <div class="button-container">
-                                        <button onclick="showAddDoctorsForm()">Add Doctors</button>
-                                        <button onclick="showDoctorList()">List Doctors</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            document.getElementById('userListContainer').innerHTML = hospitalListHtml;
-        }
+    function showHospitalList() {
+        fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/hospitals', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the token for authorization
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Failed to fetch hospital data');
+            })
+            .then(data => {
+                // Assuming data.hospitals contains the array of hospital objects
+                const hospitals = data.hospitals || []; // Use an empty array if `hospitals` is undefined
 
-        function showPharmacyList() {
-            const pharmacyListHtml = `
-                <h2>Pharmacy List</h2>
-                <div class="user-list-container">
-                    <table class="user-table">
-                        <thead>
-                            <tr>
-                                <th>Pharmacy Name</th>
-                                <th>City</th>
-                                <th>Address</th>
-                                <th>Role</th>
-                                <th>Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Pharmacy A</td>
-                                <td>City A</td>
-                                <td>Address A</td>
-                                <td>Pharmacy</td>
-                                <td>
-                                    <div class="button-container">
-                                        <button onclick="showAddPharmacistsForm()">Add Pharmacists</button>
-                                        <button onclick="showPharmacistList()">List Pharmacists</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Pharmacy B</td>
-                                <td>City B</td>
-                                <td>Address B</td>
-                                <td>Pharmacy</td>
-                                <td>
-                                    <div class="button-container">
-                                        <button onclick="showAddPharmacistsForm()">Add Pharmacists</button>
-                                        <button onclick="showPharmacistList()">List Pharmacists</button>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Pharmacy C</td>
-                                <td>City C</td>
-                                <td>Address C</td>
-                                <td>Pharmacy</td>
-                                <td>
-                                    <div class="button-container">
-                                        <button onclick="showAddPharmacistsForm()">Add Pharmacists</button>
-                                        <button onclick="showPharmacistList()">List Pharmacists</button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            `;
-            document.getElementById('userListContainer').innerHTML = pharmacyListHtml;
-        }
+                // Construct HTML for the table rows
+                let rowsHtml = hospitals.map(hospital => `
+            <tr>
+                <td>${hospital.name}</td>
+                <td>${hospital.city}</td>
+                <td>${hospital.address}</td>
+                <td>${hospital.role}</td>
+                <td>
+                    <div class="button-container">
+                        <button onclick="showAddDoctorsForm()">Add Doctors</button>
+                        <button onclick="showDoctorList()">List Doctors</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+                // Update the HTML content with the hospital list
+                const hospitalListHtml = `
+            <h2>Hospital List</h2>
+            <div class="user-list-container">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Hospital Name</th>
+                            <th>City</th>
+                            <th>Address</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            </div>
+        `;
+                document.getElementById('userListContainer').innerHTML = hospitalListHtml;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load hospital list: ' + error.message);
+            });
+    }
+
+    function showPharmacyList() {
+        fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/pharmacies', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the token for authorization
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Failed to fetch pharmacy data');
+            })
+            .then(data => {
+                // Assuming data.hospitals contains the array of hospital objects
+                const pharmacies = data.pharmacies || []; // Use an empty array if `hospitals` is undefined
+
+                // Construct HTML for the table rows
+                let rowsHtml = pharmacies.map(phamacy => `
+            <tr>
+                <td>${phamacy.name}</td>
+                <td>${phamacy.city}</td>
+                <td>${phamacy.address}</td>
+                <td>${phamacy.role}</td>
+                <td>
+                    <div class="button-container">
+                        <button onclick="showAddDoctorsForm()">Add phamcist</button>
+                        <button onclick="showDoctorList()">List phamacist</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+
+                // Update the HTML content with the hospital list
+                const phamacyListHtml = `
+            <h2>Hospital List</h2>
+            <div class="user-list-container">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Phamcy Name</th>
+                            <th>City</th>
+                            <th>Address</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            </div>
+        `;
+                document.getElementById('userListContainer').innerHTML = phamacyListHtml;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load phamacy list: ' + error.message);
+            });
+    }
 
         function showPatientList() {
             const patientListHtml = `
@@ -504,12 +512,11 @@
             `;
             document.getElementById('userListContainer').innerHTML = pharmacistListHtml;
         }
-
-        function showRegistrationForm() {
-            const registrationFormHtml = `
+    function showRegistrationForm() {
+        const registrationFormHtml = `
                <h2>Registration Form</h2>
 <div class="registration-form" style="">
-    <form>
+    <form id="facilitySignupForm">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" placeholder="Enter your name" required>
 
@@ -521,8 +528,8 @@
 
         <label for="role">Role:</label>
         <select id="role" name="role" required>
-            <option value="pharmacy">Pharmacy</option>
-            <option value="hospital">Hospital</option>
+            <option value="Pharmacy">Pharmacy</option>
+            <option value="Hospital">Hospital</option>
         </select>
 
         <input type="submit" value="Register">
@@ -531,8 +538,61 @@
 
 
             `;
-            document.getElementById('userListContainer').innerHTML = registrationFormHtml;
-        }
+        // Assuming this script runs after the login process, where the token has been stored in localStorage
+        document.getElementById('userListContainer').innerHTML = registrationFormHtml;
+        document.getElementById('facilitySignupForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Retrieve the admin's token from localStorage
+            const authToken = localStorage.getItem('authToken');
+            if (!authToken) {
+                alert('Admin not logged in. Please log in to register a facility.');
+                window.location.href = 'Login.htm';
+                return;
+            }
+
+            const facilityData = {
+                name: document.getElementById('name').value.trim(),
+                city: document.getElementById('city').value.trim(),
+                address: document.getElementById('address').value.trim(),
+                role: document.getElementById('role').value.trim()
+            };
+
+            // Validate that all fields are filled
+            if (!facilityData.name || !facilityData.city || !facilityData.address || !facilityData.role) {
+                alert('All fields are required!');
+                return;
+            }
+
+            // Send a POST request to register the facility
+            fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`, // Include the token in the Authorization header
+                },
+                body: JSON.stringify(facilityData),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Registration failed');
+                })
+                .then(data => {
+                    alert('Facility registered successfully!');
+                    // Optionally redirect to another page
+                    window.location.href = 'AdminDash.htm';
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                    alert('Registration failed: ' + error.message);
+                });
+        });
+    }
+    // Call the function to display the registration form
+    showRegistrationForm();
+
 
         function showAddDoctorsForm() {
             const addDoctorsFormHtml = `

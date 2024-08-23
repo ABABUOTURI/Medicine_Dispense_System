@@ -31,11 +31,11 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
 
         // Redirect to the appropriate dashboard based on the role
         if (role === "doctor") {
-            window.location.href = "file:///home/emmanuel/Desktop/WIZARD/Hospital/DoctorDash.htm";
+            window.location.href = "file:///C:/Users/ngeti/Desktop/projects/hospital2/Medicine_Dispense_System/DoctorDash.htm";
         } else if (role === "pharmacist") {
-            window.location.href = "file:///home/emmanuel/Desktop/WIZARD/Hospital/pharmacistDash.htm";
+            window.location.href = "file:///C:/Users/ngeti/Desktop/projects/hospital2/Medicine_Dispense_System/pharmacistDash.htm";
         } else if (role === "Admin") {
-            window.location.href = "file:///home/emmanuel/Desktop/WIZARD/Hospital/AdminDash.htm";
+            window.location.href = "file:///C:/Users/ngeti/Desktop/projects/hospital2/Medicine_Dispense_System/AdminDash.htm";
         } else {
             alert("Invalid role!");
         }
