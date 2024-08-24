@@ -149,85 +149,97 @@
         </div>
 
         <!-- Registration Form -->
-        <div class="dashboard-container">
-            <h2>Onboard User</h2>
-            <form id="registrationForm" class="form-grid">
-                <div>
-                    <label for="firstName">First Name</label>
-                    <input type="text" id="firstName" name="firstName" placeholder="Enter First Name" required>
-                </div>
-
-                <div>
-                    <label for="secondName">Second Name</label>
-                    <input type="text" id="secondName" name="secondName" placeholder="Enter Second Name" required>
-                </div>
-
-                <div>
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" placeholder="Enter Email" required>
-                </div>
-
-                <div>
-                    <label for="phoneNumber">Phone Number</label>
-                    <input type="number" id="phoneNumber" name="phoneNumber" placeholder="Enter Phone Number" min="0" required>
-                </div>
-
-
-                <div>
-                    <label for="patientcode">Patient Code</label>
-                    <input type="number" id="patientcode" name="patientcode" placeholder="Enter Patient code" min="0">
-                </div>
-
-                <div>
-                    <label for="dob">Date of Birth</label>
-                    <input type="date" id="dob" name="dob" >
-                </div>
-
-                <div>
-                    <label for="location">Location</label>
-                    <input type="text" id="location" name="location" placeholder="Enter Location" >
-                </div>
-
-                <div>
-                    <label for="userRole">User Role</label>
-                    <select id="userRole" name="userRole" required>
-                        <option value="Doctor">Doctor</option>
-                        <option value="Pharmacist">Pharmacist</option>
-                        <option value="Patient">Patient</option>
-                        <option value="Admin">Admin</option>
-                    </select>
-                </div>
-
-                <button type="submit">Register</button>
-            </form>
-            <div id="successMessage">User registered successfully!</div>
-        </div>
-    </main>
-
+       - Registration Form -->
+    <div class="dashboard-container">
+        <h2>Onboard User</h2>
+        <form id="registrationForm" class="form-grid">
+            <div>
+                <label for="firstName">First Name</label>
+                <input type="text" id="firstName" name="firstName" placeholder="Enter First Name" required>
+            </div>
+    
+            <div>
+                <label for="secondName">Second Name</label>
+                <input type="text" id="secondName" name="secondName" placeholder="Enter Second Name" required>
+            </div>
+    
+            <div>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter Email" required>
+            </div>
+    
+            <div>
+                <label for="phoneNumber">Phone Number</label>
+                <input type="number" id="phoneNumber" name="phoneNumber" placeholder="Enter Phone Number" min="0" required>
+            </div>
+    
+            <div>
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" name="dob" required>
+            </div>
+    
+            <div>
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" placeholder="Enter Location" required>
+            </div>
+    
+            <div>
+                <label for="password">Password</label>
+                <input type="password"  id="password" name="password" placeholder="Enter Password" required>
+            </div>
+    
+            <input type="hidden" id="userRole" name="userRole" value="Patient">
+    
+            <button type="submit">Register</button>
+        </form>
+        <div id="successMessage">User registered successfully!</div>
+    </div>
+    
     <script>
-        // Function to show and hide success message
-        function showSuccessMessage() {
-            const successMessage = document.getElementById('successMessage');
-            successMessage.style.display = 'block';
-    
-            setTimeout(function () {
-                successMessage.style.display = 'none';
-            }, 2000);
-        }
-    
-        // Function to reset the form
-        function resetForm() {
-            document.getElementById('registrationForm').reset();
-        }
-    
-        // Handle form submission
-        document.getElementById('registrationForm').addEventListener('submit', function (event) {
-            event.preventDefault();
-            showSuccessMessage();
-            resetForm(); // Reset the form after displaying the success message
+        document.getElementById('registrationForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const authToken = localStorage.getItem('authToken'); // Retrieve the auth token from localStorage
+
+            const patientData = {
+                first_name: document.getElementById('firstName').value.trim(),
+                second_name: document.getElementById('secondName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone_number: document.getElementById('phoneNumber').value.trim(),
+                DOB: document.getElementById('dob').value,
+                location: document.getElementById('location').value.trim(),
+                password: document.getElementById('password').value.trim(),
+                user: 'Patient'
+            };
+
+            console.log("Patient Data to be Registered:", patientData);
+
+            fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/register/patient', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`, // Include the auth token in the header
+                },
+                body: JSON.stringify(patientData),
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Patient registration failed');
+                })
+                .then(data => {
+                    console.log("Registration Response:", data);
+                    alert('Patient registered successfully!');
+                    document.getElementById('registrationForm').reset();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Patient registration failed: ' + error.message);
+                });
         });
     </script>
-    
+
 </body>
 
 </html>

@@ -212,24 +212,66 @@
     </main>
 
     <script>
+       function filterPatients() {
+            const searchQuery = document.getElementById('patientSearch').value.toLowerCase();
+
+            if (searchQuery) {
+                console.log('Searching for patient with query:', searchQuery);
+
+                fetch(`https://hpms-0be27dd3c23f.herokuapp.com/hos/${searchQuery}/patient`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the token for authorization
+                    }
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            console.log('Patient data retrieved successfully');
+                            return response.json();
+                        } else if (response.status === 404) {
+                            console.warn('Patient not found');
+                            alert('Patient not found');
+                            return null;
+                        }
+                        throw new Error('Failed to fetch patient data');
+                    })
+                    .then(data => {
+                        if (data && data.success) {
+                            const patient = data.success;
+                            const patientListHtml = `
+                    <tr>
+                        <td>${patient.id}</td>
+                        <td>${patient.first_name}</td>
+                        <td>${patient.second_name}</td>
+                        <td>${patient.patient_code}</td>
+                        <td>${patient.email}</td>
+                        <td>${patient.phone_number}</td>
+                        <td>${patient.dob}</td>
+                        <td>${patient.location}</td>
+                    </tr>
+                `;
+                            document.getElementById('patientList').innerHTML = patientListHtml;
+                            console.log('Patient data displayed:', patient);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to load patient list: ' + error.message);
+                    });
+            } else {
+                alert('Please enter a patient code');
+                console.warn('Search query is empty');
+            }
+        }
+
+
         function viewPatient(id) {
             alert('Displaying details for Patient ID: ' + id);
             // Implement the logic to display patient details in a separate section or modal.
         }
 
-        function filterPatients() {
-            const searchQuery = document.getElementById('patientSearch').value.toLowerCase();
-            const patients = document.querySelectorAll('#patientList tr');
-            patients.forEach(patient => {
-                const patientCode = patient.querySelector('td:first-child a').textContent.toLowerCase();
-                if (patientCode.includes(searchQuery)) {
-                    patient.style.display = '';
-                } else {
-                    patient.style.display = 'none';
-                }
-            });
-        }
-
+      
         function goToPrescriptionPage(patientId) {
             // Navigate to the prescription page with patientId as a query parameter
             window.location.href = `prescription.htm?patientId=${patientId}`;

@@ -208,7 +208,7 @@
     </main>
 
     <script>
-        document.getElementById('manageUsersToggle').addEventListener('click', function(event) {
+        document.getElementById('manageUsersToggle').addEventListener('click', function (event) {
             event.preventDefault();
             const manageUsersList = document.getElementById('manageUsersList');
             if (manageUsersList.style.display === 'none' || manageUsersList.style.display === '') {
@@ -227,7 +227,7 @@
             if (listToShow) {
                 listToShow.classList.remove('hidden');
             } else {
-                switch(type) {
+                switch (type) {
                     case 'hospitals':
                         showHospitalList();
                         break;
@@ -247,26 +247,24 @@
             }
         }
 
-    function showHospitalList() {
-        fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/hospitals', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the token for authorization
-            }
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
+        function showHospitalList() {
+            fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/hospitals', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the token for authorization
                 }
-                throw new Error('Failed to fetch hospital data');
             })
-            .then(data => {
-                // Assuming data.hospitals contains the array of hospital objects
-                const hospitals = data.hospitals || []; // Use an empty array if `hospitals` is undefined
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Failed to fetch hospital data');
+                })
+                .then(data => {
+                    const hospitals = data.hospitals || []; // Use an empty array if `hospitals` is undefined
 
-                // Construct HTML for the table rows
-                let rowsHtml = hospitals.map(hospital => `
+                    let rowsHtml = hospitals.map(hospital => `
             <tr>
                 <td>${hospital.name}</td>
                 <td>${hospital.city}</td>
@@ -274,15 +272,14 @@
                 <td>${hospital.role}</td>
                 <td>
                     <div class="button-container">
-                        <button onclick="showAddDoctorsForm()">Add Doctors</button>
-                        <button onclick="showDoctorList()">List Doctors</button>
+                        <button onclick="showAddDoctorsForm('${hospital.id}')">Add Doctors</button>
+                        <button onclick="showDoctorList('${hospital.id}')">List Doctors</button>
                     </div>
                 </td>
             </tr>
         `).join('');
 
-                // Update the HTML content with the hospital list
-                const hospitalListHtml = `
+                    const hospitalListHtml = `
             <h2>Hospital List</h2>
             <div class="user-list-container">
                 <table class="user-table">
@@ -301,56 +298,55 @@
                 </table>
             </div>
         `;
-                document.getElementById('userListContainer').innerHTML = hospitalListHtml;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to load hospital list: ' + error.message);
-            });
-    }
+                    document.getElementById('userListContainer').innerHTML = hospitalListHtml;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load hospital list: ' + error.message);
+                });
+        }
 
-    function showPharmacyList() {
-        fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/pharmacies', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the token for authorization
-            }
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
+        function showPharmacyList() {
+            fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/pharmacies', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the token for authorization
                 }
-                throw new Error('Failed to fetch pharmacy data');
             })
-            .then(data => {
-                // Assuming data.hospitals contains the array of hospital objects
-                const pharmacies = data.pharmacies || []; // Use an empty array if `hospitals` is undefined
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Failed to fetch pharmacy data');
+                })
+                .then(data => {
+                    const pharmacies = data.pharmacies || []; // Use an empty array if `pharmacies` is undefined
 
-                // Construct HTML for the table rows
-                let rowsHtml = pharmacies.map(phamacy => `
+                    // Construct HTML for the table rows
+                    let rowsHtml = pharmacies.map(pharmacy => `
             <tr>
-                <td>${phamacy.name}</td>
-                <td>${phamacy.city}</td>
-                <td>${phamacy.address}</td>
-                <td>${phamacy.role}</td>
+                <td>${pharmacy.name}</td>
+                <td>${pharmacy.city}</td>
+                <td>${pharmacy.address}</td>
+                <td>${pharmacy.role}</td>
                 <td>
                     <div class="button-container">
-                        <button onclick="showAddDoctorsForm()">Add phamcist</button>
-                        <button onclick="showDoctorList()">List phamacist</button>
+                        <button onclick="showAddPharmacistsForm('${pharmacy.id}')">Add Pharmacist</button>
+                        <button onclick="showPharmacistList('${pharmacy.id}')">List Pharmacists</button>
                     </div>
                 </td>
             </tr>
         `).join('');
 
-                // Update the HTML content with the hospital list
-                const phamacyListHtml = `
-            <h2>Hospital List</h2>
+                    // Update the HTML content with the pharmacy list
+                    const pharmacyListHtml = `
+            <h2>Pharmacy List</h2>
             <div class="user-list-container">
                 <table class="user-table">
                     <thead>
                         <tr>
-                            <th>Phamcy Name</th>
+                            <th>Pharmacy Name</th>
                             <th>City</th>
                             <th>Address</th>
                             <th>Role</th>
@@ -363,14 +359,13 @@
                 </table>
             </div>
         `;
-                document.getElementById('userListContainer').innerHTML = phamacyListHtml;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to load phamacy list: ' + error.message);
-            });
-    }
-
+                    document.getElementById('userListContainer').innerHTML = pharmacyListHtml;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load pharmacy list: ' + error.message);
+                });
+        }
         function showPatientList() {
             const patientListHtml = `
                 <h2>Patient List</h2>
@@ -420,50 +415,68 @@
             document.getElementById('userListContainer').innerHTML = patientListHtml;
         }
 
-        function showDoctorList() {
-            const doctorListHtml = `
-               <h2>Doctor List</h2>
+     function showDoctorList(hospitalId) {
+            // Adjust the endpoint if the hospitalId is needed in the URL
+            const endpoint = `https://hpms-0be27dd3c23f.herokuapp.com/api/v1/doctors`;
 
-<div class="user-list-container">
-    <table class="user-table">
-        <thead>
-            <tr>
-                <th>First Name</th>
-                <th>Second Name</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-                <th>Role</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- Example data rows -->
-            <tr>
-                <td>John</td>
-                <td>Doe</td>
-                <td>john.doe@example.com</td>
-                <td>(555) 123-4567</td>
-                <td>Doctor</td>
-            </tr>
-            <tr>
-                <td>Jane</td>
-                <td>Smith</td>
-                <td>jane.smith@example.com</td>
-                <td>(555) 987-6543</td>
-                <td>Doctor</td>
-            </tr>
-            <tr>
-                <td>Emily</td>
-                <td>Jones</td>
-                <td>emily.jones@example.com</td>
-                <td>(555) 456-7890</td>
-                <td>Doctor</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+            fetch(endpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the token for authorization
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        // Log the status and status text if the response is not OK
+                        console.error(`HTTP Error: ${response.status} - ${response.statusText}`);
+                        return response.text().then(text => {
+                            console.error('Response Text:', text); // Log the response text
+                            throw new Error('Failed to fetch doctor data');
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Doctor Data:', data); // Log the data received from the server
 
-            `;
-            document.getElementById('userListContainer').innerHTML = doctorListHtml;
+                    const doctors = data.doctors || []; // Use an empty array if `doctors` is undefined
+
+                    let rowsHtml = doctors.map(doctor => `
+            <tr>
+                <td>${doctor.first_name}</td>
+                <td>${doctor.second_name}</td>
+                <td>${doctor.email}</td>
+                <td>${doctor.phone_number}</td>
+                <td>${doctor.role}</td>
+            </tr>
+        `).join('');
+
+                    const doctorListHtml = `
+            <h2>Doctor List</h2>
+            <div class="user-list-container">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Second Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            </div>
+        `;
+                    document.getElementById('userListContainer').innerHTML = doctorListHtml;
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Failed to load doctor list: ' + error.message);
+                });
         }
 
         function showPharmacistList() {
@@ -512,8 +525,8 @@
             `;
             document.getElementById('userListContainer').innerHTML = pharmacistListHtml;
         }
-    function showRegistrationForm() {
-        const registrationFormHtml = `
+        function showRegistrationForm() {
+            const registrationFormHtml = `
                <h2>Registration Form</h2>
 <div class="registration-form" style="">
     <form id="facilitySignupForm">
@@ -538,126 +551,206 @@
 
 
             `;
-        // Assuming this script runs after the login process, where the token has been stored in localStorage
-        document.getElementById('userListContainer').innerHTML = registrationFormHtml;
-        document.getElementById('facilitySignupForm').addEventListener('submit', function (e) {
-            e.preventDefault();
+            // Assuming this script runs after the login process, where the token has been stored in localStorage
+            document.getElementById('userListContainer').innerHTML = registrationFormHtml;
+            document.getElementById('facilitySignupForm').addEventListener('submit', function (e) {
+                e.preventDefault();
 
-            // Retrieve the admin's token from localStorage
-            const authToken = localStorage.getItem('authToken');
-            if (!authToken) {
-                alert('Admin not logged in. Please log in to register a facility.');
-                window.location.href = 'Login.htm';
-                return;
-            }
+                // Retrieve the admin's token from localStorage
+                const authToken = localStorage.getItem('authToken');
+                if (!authToken) {
+                    alert('Admin not logged in. Please log in to register a facility.');
+                    window.location.href = 'Login.htm';
+                    return;
+                }
 
-            const facilityData = {
-                name: document.getElementById('name').value.trim(),
-                city: document.getElementById('city').value.trim(),
-                address: document.getElementById('address').value.trim(),
-                role: document.getElementById('role').value.trim()
-            };
+                const facilityData = {
+                    name: document.getElementById('name').value.trim(),
+                    city: document.getElementById('city').value.trim(),
+                    address: document.getElementById('address').value.trim(),
+                    role: document.getElementById('role').value.trim()
+                };
 
-            // Validate that all fields are filled
-            if (!facilityData.name || !facilityData.city || !facilityData.address || !facilityData.role) {
-                alert('All fields are required!');
-                return;
-            }
+                // Validate that all fields are filled
+                if (!facilityData.name || !facilityData.city || !facilityData.address || !facilityData.role) {
+                    alert('All fields are required!');
+                    return;
+                }
 
-            // Send a POST request to register the facility
-            fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${authToken}`, // Include the token in the Authorization header
-                },
-                body: JSON.stringify(facilityData),
-            })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    }
-                    throw new Error('Registration failed');
+                // Send a POST request to register the facility
+                fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`, // Include the token in the Authorization header
+                    },
+                    body: JSON.stringify(facilityData),
                 })
-                .then(data => {
-                    alert('Facility registered successfully!');
-                    // Optionally redirect to another page
-                    window.location.href = 'AdminDash.htm';
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    alert('Registration failed: ' + error.message);
-                });
-        });
-    }
-    // Call the function to display the registration form
-    showRegistrationForm();
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Registration failed');
+                    })
+                    .then(data => {
+                        alert('Facility registered successfully!');
+                        // Optionally redirect to another page
+                        window.location.href = 'AdminDash.htm';
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('Registration failed: ' + error.message);
+                    });
+            });
+        }
+        // Call the function to display the registration form
+        showRegistrationForm();
 
+        function showAddDoctorsForm(hospitalId) {
+            console.log("Selected Hospital ID:", hospitalId); // Log the hospital_id to the console
 
-        function showAddDoctorsForm() {
+            const authToken = localStorage.getItem('authToken'); // Retrieve the authToken from localStorage
+
             const addDoctorsFormHtml = `
-                <h2>Add Doctors Form</h2>
-                <div class="registration-form">
-    <form>
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" name="firstName" required>
+        <h2>Add Doctors Form</h2>
+        <div class="registration-form">
+            <form id="doctorSignupForm">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
 
-        <label for="secondName">Second Name:</label>
-        <input type="text" id="secondName" name="secondName" required>
+                <label for="secondName">Second Name:</label>
+                <input type="text" id="secondName" name="secondName" required>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
 
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" id="phoneNumber" name="phoneNumber" required>
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" required>
 
-        <label for="role">Role:</label>
-        <select id="role" name="role" required>
-            <option value="doctor">Doctor</option>
-            <option value="nurse">Pharmacist</option>
-            <option value="admin">Admin</option>
-        </select>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
 
 
-
-        <input type="submit" value="Add Doctor">
-    </form>
-</div>
-
-            `;
+                <input type="submit" value="Add Doctor">
+            </form>
+        </div>
+    `;
             document.getElementById('userListContainer').innerHTML = addDoctorsFormHtml;
+
+            document.getElementById('doctorSignupForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const doctorData = {
+                    first_name: document.getElementById('firstName').value.trim(),
+                    second_name: document.getElementById('secondName').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone_number: document.getElementById('phoneNumber').value.trim(),
+                    password: document.getElementById('password').value.trim(),
+                    user: 'Doctor',
+                };
+
+                console.log("Doctor Data to be Registered:", doctorData);
+
+                fetch(`http://hpms-0be27dd3c23f.herokuapp.com/api/v1/register/staff/${hospitalId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`, // Use the retrieved authToken
+                    },
+                    body: JSON.stringify(doctorData),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Doctor registration failed');
+                    })
+                    .then(data => {
+                        alert('Doctor registered successfully!');
+                        window.location.href = 'AdminDash.htm';
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('Doctor registration failed: ' + error.message);
+                    });
+            });
         }
 
-        function showAddPharmacistsForm() {
+
+       function showAddPharmacistsForm(pharmacyId) {
+            console.log("Selected Pharmacy ID:", pharmacyId); // Log the pharmacy_id to the console
+
+            const authToken = localStorage.getItem('authToken'); // Retrieve the authToken from localStorage
+
             const addPharmacistsFormHtml = `
-               <h2>Add Pharmacists</h2>
-<div class="registration-form">
-    <form>
-        <label for="firstName">First Name:</label>
-        <input type="text" id="firstName" name="firstName" placeholder="Enter first name" required>
+        <h2>Add Pharmacist Form</h2>
+        <div class="registration-form">
+            <form id="pharmacistSignupForm">
+                <label for="firstName">First Name:</label>
+                <input type="text" id="firstName" name="firstName" required>
 
-        <label for="secondName">Second Name:</label>
-        <input type="text" id="secondName" name="secondName" placeholder="Enter second name" required>
+                <label for="secondName">Second Name:</label>
+                <input type="text" id="secondName" name="secondName" required>
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" placeholder="Enter email address" required>
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
 
-        <label for="phoneNumber">Phone Number:</label>
-        <input type="tel" id="phoneNumber" name="phoneNumber" placeholder="Enter phone number" required>
+                <label for="phoneNumber">Phone Number:</label>
+                <input type="tel" id="phoneNumber" name="phoneNumber" required>
 
-        <label for="role">Role:</label>
-        <select id="role" name="role" required>
-            <option value="pharmacist">Pharmacist</option>
-            <option value="otherRole">Other Role</option>
-        </select>
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" required>
 
-        <input type="submit" value="Add Pharmacist">
-    </form>
-</div>
+                <input type="hidden" id="pharmacyId" name="pharmacyId" value="${pharmacyId}"> <!-- Hidden field for pharmacy_id -->
 
-            `;
+                <input type="submit" value="Add Pharmacist">
+            </form>
+        </div>
+    `;
             document.getElementById('userListContainer').innerHTML = addPharmacistsFormHtml;
+
+            document.getElementById('pharmacistSignupForm').addEventListener('submit', function (e) {
+                e.preventDefault();
+
+                const pharmacistData = {
+                    first_name: document.getElementById('firstName').value.trim(),
+                    second_name: document.getElementById('secondName').value.trim(),
+                    email: document.getElementById('email').value.trim(),
+                    phone_number: document.getElementById('phoneNumber').value.trim(),
+                    password: document.getElementById('password').value.trim(),
+                    pharmacy_id: document.getElementById('pharmacyId').value, // Use the hidden field value
+                    user: 'Pharmacist',
+                    is_active: true // Set the active status if required
+                };
+
+                console.log("Pharmacist Data to be Registered:", pharmacistData);
+
+                fetch(`http://hpms-0be27dd3c23f.herokuapp.com/api/v1/register/staff/${pharmacyId}`, { // Adjust the endpoint if needed
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`, // Use the retrieved authToken
+                    },
+                    body: JSON.stringify(pharmacistData),
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        }
+                        throw new Error('Pharmacist registration failed');
+                    })
+                    .then(data => {
+                        alert('Pharmacist registered successfully!');
+                        window.location.href = 'AdminDash.htm';
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                        alert('Pharmacist registration failed: ' + error.message);
+                    });
+            });
         }
+
+
     </script>
 </body>
 
