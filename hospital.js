@@ -33,7 +33,7 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
             if (role === "Doctor") {
                 window.location.href = "DoctorDash.htm";
             } else if (role === "Pharmacist") {
-                window.location.href = "Medicine_Dispense_System/PharmacistDash.htm";
+                window.location.href = "PharmacistDash.htm";
             } else if (role === "Admin") {
                 window.location.href = "AdminDash.htm";
             } else {
