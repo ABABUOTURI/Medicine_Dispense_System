@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prescription Form</title>
+    <style>
+        .floating-header {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #D3D3D3;
+            color: #D3D3D3;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #008080;
+            position: fixed;
+            top: 120px;
+            bottom: 0;
+            left: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            color: #fff;
+            height: 50%;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .dashboard-container {
+            margin-left: 270px;
+            padding: 40px;
+            width: 70%;
+            margin-top: 10%;
+            background-color: #D3D3D3;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .dashboard-container h1 {
+            color: #008080;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .search-bar input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .search-bar button {
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .patient-list {
+            margin-top: 20px;
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .patient-list th,
+        .patient-list td {
+            background-color: #fff;
+            padding: 12px;
+            border: 1px solid #DDD;
+            text-align: left;
+        }
+
+        .patient-list th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+        .patient-list td a {
+            color: #008080;
+            text-decoration: none;
+        }
+
+        .patient-list td a:hover {
+            text-decoration: underline;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .prescription-form {
+            display: none;
+            background-color: #D3D3D3;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 10%;
+            left: 25%;
+            width: 50%;
+            z-index: 1000;
+        }
+
+        .prescription-form h2 {
+            color: #008080;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+        }
+
+        .form-group input[type="text"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-buttons button {
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .form-buttons .delete-btn {
+            background-color: #ff6347;
+        }
+
+        .close-btn {
+            background-color: #ff6347;
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            padding: 5px 10px;
+            font-size: 18px;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+        }
+
+        .medication-list {
+            margin-top: 10px;
+        }
+
+        .medication-item {
+            margin-bottom: 10px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+    <script>
+        function showMedicationForm() {
+            document.getElementById('comment-section').classList.add('hidden');
+            document.getElementById('prescription-form').classList.remove('hidden');
+        }
+
+        function closeForm() {
+            document.getElementById('prescription-form').classList.add('hidden');
+            document.getElementById('comment-section').classList.remove('hidden');
+        }
+
+        // Function to extract query parameters from the URL
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+        // Extract patientCode from URL
+        const patientCode = getQueryParam('patient_code');
+
+        function sendComment() {
+            const authToken = localStorage.getItem('authToken'); // Retrieve the auth token from localStorage
+            const comment = document.getElementById('comment').value;
+            const patientCode = getQueryParam('patient_code'); // Assuming you have a function to get query parameters
+
+            if (!patientCode) {
+                console.error('Patient code is missing in the URL.');
+                alert('Patient code is missing. Cannot send comment.');
+                return;
+            }
+
+            console.log('Sending comment:', comment, 'For patient code:', patientCode);
+
+            fetch(`https://hpms-0be27dd3c23f.herokuapp.com/api/v1/hospital/${patientCode}/prescription`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${authToken}`, // Include the auth token in the header
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ comment })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Success:', data);
+
+                    // Extract OTP and Prescription ID from the response
+                    const otpCode = data.otp_code;
+                    const prescriptionId = data.prescription_id;
+
+                    // Print OTP and Prescription ID to the console
+                    console.log('OTP Code:', otpCode, 'Prescription ID:', prescriptionId);
+
+                    if (otpCode && prescriptionId) {
+                        alert('Comment sent successfully!');
+                        goToAddMedicationPage(otpCode, prescriptionId); // Pass the OTP and Prescription ID to the redirect function
+                    } else {
+                        alert('OTP code or Prescription ID not found in response.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while sending the comment.');
+                });
+        }
+
+        function goToAddMedicationPage(otpCode, prescriptionId) {
+            // Redirect to the add medication page with OTP and Prescription ID as query parameters
+            window.location.href = `http://127.0.0.1:5501/Medicine_Dispense_System/addmedication.html?otp_code=${otpCode}&prescription_id=${prescriptionId}`;
+        }
+
+
+
+        function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <div class="floating-header">
+        <h1>Prescription Dashboard</h1>
+    </div>
+    <div class="sidebar">
+        <ul>
+            <li><a href="DoctorDash.htm">Dashboard</a></li>
+            <li><a href="PatientRecords.htm">Profile</a></li>
+            <li><a href="DoctorDash.htm">Onboarded</a></li>
+            <li><a href="onboarding.htm">Onboarding</a></li>
+            <li><a href="#">Log Out</a></li>
+        </ul>
+    </div>
+    <div class="dashboard-container">
+        <div id="comment-section">
+            <h2>Enter Comment</h2>
+            <form id="comment-form" onsubmit="event.preventDefault(); sendComment();">
+                <div class="form-group">
+                    <label for="comment">Comment:</label>
+                    <textarea id="comment" name="comment" rows="4" required></textarea>
+                </div>
+                <button type="button" onclick="sendComment()">Send Comment</button>
+            </form>
+        </div>
+        <div id="prescription-form" class="hidden">
+            <!-- Prescription form content goes here -->
+            <button class="close-btn" onclick="closeForm()">×</button>
+        </div>
+    </div>
+</body>
+
+</html>

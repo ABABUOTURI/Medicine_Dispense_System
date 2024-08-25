@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Medication</title>
+    <style>
+        .floating-header {
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #D3D3D3;
+            color: #D3D3D3;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #008080;
+            position: fixed;
+            top: 120px;
+            bottom: 0;
+            left: 20px;
+            border-radius: 20px;
+            padding: 20px;
+            color: #fff;
+            height: 50%;
+            overflow-y: auto;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            margin: 20px 0;
+        }
+
+        .sidebar ul li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 18px;
+            display: block;
+        }
+
+        .sidebar ul li a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            margin-left: 270px;
+            padding: 40px;
+            width: 70%;
+            margin-top: 10%;
+            background-color: #D3D3D3;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .container h1 {
+            color: #008080;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        .form-buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .form-buttons button {
+            padding: 10px 20px;
+            background-color: #008080;
+            color: #fff;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .form-buttons .cancel-btn {
+            background-color: #ff6347;
+        }
+
+        .form-buttons button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <ul>
+            <li><a href="DoctorDash.htm">Dashboard</a></li>
+            <li><a href="PatientRecords.htm">Profile</a></li>
+            <li><a href="DoctorDash.htm">Onboarded</a></li>
+            <li><a href="onboarding.htm">Onboarding</a></li>
+            <li><a href="#">Log Out</a></li>
+        </ul>
+    </div>
+
+    <div class="container">
+        <h1>Add Medication</h1>
+        <form id="medication-form">
+            <div class="form-group">
+                <label for="medication-name">Medication Name:</label>
+                <input type="text" id="medication-name" name="medication-name" required>
+            </div>
+            <div class="form-group">
+                <label for="dosage">Dosage:</label>
+                <input type="text" id="dosage" name="dosage" required>
+            </div>
+            <div class="form-buttons">
+                <button type="submit">Add Medication</button>
+            </div>
+        </form>
+
+        <!-- Section to display added medications -->
+        <div id="added-medications" class="added-medications">
+            <h2>Added Medications</h2>
+            <ul id="medications-list"></ul>
+        </div>
+
+        <!-- Buttons to add another medication or finish -->
+        <div id="next-actions" class="form-buttons" style="display: none;">
+            <button id="add-another-med-btn" type="button">Add Another Medication</button>
+            <button id="done-btn" type="button" class="cancel-btn"
+                onclick="window.location.href='DoctorDash.htm'">Done</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('medication-form');
+            const medicationsList = document.getElementById('medications-list');
+            const nextActions = document.getElementById('next-actions');
+
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                function addMedication() {
+                    const authToken = localStorage.getItem('authToken'); // Retrieve the auth token from localStorage
+
+                    const medicationName = document.getElementById('medication-name').value;
+                    const dosage = document.getElementById('dosage').value;
+
+                    // Retrieve prescription_id from the URL
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const prescriptionId = urlParams.get('prescription_id');
+                    const otp_code = urlParams.get('otp_code')
+                    console.log(otp_code)
+
+                    if (!prescriptionId) {
+                        alert('Prescription ID is missing. Cannot add medication.');
+                        return;
+                    }
+
+                    // Create the request body according to the model
+                    const requestBody = {
+                        dosage: dosage,
+                        name: medicationName
+                    };
+
+                    console.log('Request Body:', JSON.stringify(requestBody)); // Debugging: Log the request body
+
+                    fetch(`http://hpms-0be27dd3c23f.herokuapp.com/api/v1/prescrition/med/${prescriptionId}`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${authToken}`,
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(requestBody)
+                    })
+                        .then(response => {
+                            console.log(response);
+                            if (!response.ok) {
+                                return response.json().then(errorData => {
+                                    console.error('Error Response:', errorData);
+                                    throw new Error(errorData.message || 'Failed to add medication');
+                                });
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            console.log('Success:', data);
+                            alert(`Medication added successfully. OTP CODE: ${otp_code}`);
+
+                            // Add the new medication to the list
+                            const newMedication = document.createElement('li');
+                            newMedication.textContent = `${medicationName} - ${dosage}`;
+                            medicationsList.appendChild(newMedication);
+
+                            // Show the next actions buttons
+                            nextActions.style.display = 'block';
+
+                            // Reset the form
+                            form.reset();
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Failed to add medication: ' + error.message);
+                        });
+                }
+
+                addMedication();
+            });
+
+            // Handle the "Add Another Medication" button click
+            document.getElementById('add-another-med-btn').addEventListener('click', function () {
+                form.reset();
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>

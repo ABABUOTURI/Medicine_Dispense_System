@@ -171,22 +171,7 @@
 </head>
 
 <body>
-
-    <!-- Floating Header -->
-    <div class="floating-header">
-        <h1>Dispensed Drugs</h1>
-    </div>
-
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <ul>
-            <li><a href="PharmacistDash.htm">Dashboard</a></li>
-            <li><a href="Drugstock.htm">Drug stock</a></li>
-            <li><a href="DispenseDRug.htm">Dispensed Drugs</a></li>
-            <li><a href="OrderDrugs.htm">Ordered Drugs</a></li>
-            <li><a href="#">Log Out</a></li>
-        </ul>
-    </div>
+    <!-- Other content -->
 
     <!-- Main Content -->
     <div class="main-content" style="width: 950px;margin-top: 12%;background-color: #D3D3D3;">
@@ -205,7 +190,8 @@
                     <tbody id="medicineData">
                         <!-- Placeholder for issued medicines -->
                         <tr>
-                            <td colspan="3" style="text-align: center;">No issued medicines available. Medicines will appear here once fetched from the database.</td>
+                            <td colspan="3" style="text-align: center;">No issued medicines available. Medicines will
+                                appear here once fetched from the database.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -215,86 +201,105 @@
             <!-- Comments from Doctor -->
             <div class="comments-container">
                 <h2>Comments from Doctor</h2>
-                <textarea readonly placeholder="Doctor's comments will appear here after being fetched from the database..."></textarea>
+                <textarea readonly
+                    placeholder="Doctor's comments will appear here after being fetched from the database..."></textarea>
             </div>
+            <button class="dispense-btn" onclick="dispenseDrugs()">Dispense</button>
+
         </div>
-        <button class="dispense-btn" onclick="dispenseDrugs()">Dispense</button>
+
+        <!-- Popup message -->
+        <div class="popup-message" id="popupMessage">Drugs dispensed successfully!</div>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Extract medications data from the URL
+                const urlParams = new URLSearchParams(window.location.search);
+                const encodedData = urlParams.get('data');
+                const otp = urlParams.get('otp')
+
+                if (encodedData) {
+                    const mydata = JSON.parse(decodeURIComponent(encodedData)); // Decode and parse the JSON string
+
+                    console.log('Retrieved Data:', otp, mydata.comment); // Now `mydata` is your object
+
+                    // Use `mydata` to populate your table or perform other actions
+                    fillTableWithData(mydata);
+                    fillComments(mydata);
+
+                    // Bind the dispenseDrugs function to the button click, passing the `mydata` object
+                    document.querySelector('.dispense-btn').addEventListener('click', () => dispenseDrugs(mydata));
+                } else {
+                    console.log('No data passed to this page.');
+                }
+            });
+
+            function fillTableWithData(mydata) {
+                // Example function to fill your table with the retrieved data
+                const medicineData = document.getElementById('medicineData');
+                medicineData.innerHTML = ''; // Clear the table body
+
+                mydata.meds.forEach(med => {
+                    const row = `
+                        <tr>
+                            <td>${med.name}</td>
+                            <td>${med.dosage}</td>
+                        </tr>
+                    `;
+                    medicineData.innerHTML += row;
+                });
+            }
+
+            function fillComments(mydata) {
+                const commentsField = document.querySelector('.comments-container textarea');
+                const doctorComments = mydata.comment || 'No comments available'; // Use 'No comments available' if the comment is empty
+                commentsField.value = doctorComments;
+            }
+
+            function addMedicine() {
+                // Logic to add a new medicine can go here
+                const urlParams = new URLSearchParams(window.location.search);
+                const encodedData = urlParams.get('data');
+                const otp = urlParams.get('otp')
+                const mydata = JSON.parse(decodeURIComponent(encodedData)); // Decode and parse the JSON string
+
+
+                window.location.href = `addMedPham.html?otp_code=${otp}&prescription_id=${mydata.id}`;
+            }
+
+            function dispenseDrugs() {
+                // Logic to handle the dispense button action can go here
+
+                const urlParams = new URLSearchParams(window.location.search);
+                const encodedData = urlParams.get('data');
+                const otp = urlParams.get('otp')
+                const mydata = JSON.parse(decodeURIComponent(encodedData));
+                fetch(`http://hpms-0be27dd3c23f.herokuapp.com/api/v1/dis/${mydata.id}/${otp}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the auth token in the header
+                    },
+                })
+
+                    .then(data => {
+                        if (data) {
+                            alert('Drugs dispensed successfully!');
+                            // Redirect to the Pharmacist Dashboard after successful dispensing
+                            window.location.href = `PharmacistDash.htm`;
+                        } else {
+                            alert('Failed to dispense');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Failed to Dispense: ' + error.message);
+                    });
+            }
+        </script>
     </div>
-
-    <!-- Popup message -->
-    <div class="popup-message" id="popupMessage">Drugs dispensed successfully!</div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            fetchIssuedMedicines();
-            fetchDoctorComments();
-        });
-
-        function fetchIssuedMedicines() {
-            // Placeholder function for fetching issued medicines from the database
-            // Use AJAX or fetch API to retrieve the data and populate the table
-        }
-
-        function fetchDoctorComments() {
-            // Placeholder function for fetching doctor's comments from the database
-            // Use AJAX or fetch API to retrieve the comments and display in the textarea
-        }
-
-        function addMedicineRow(name, dosage) {
-            const medicineDataContainer = document.getElementById('medicineData');
-
-            const row = document.createElement('tr');
-
-            const nameCell = document.createElement('td');
-            nameCell.innerText = name;
-
-            const dosageCell = document.createElement('td');
-            dosageCell.innerText = dosage;
-
-            const actionCell = document.createElement('td');
-            const actionButtons = document.createElement('div');
-            actionButtons.classList.add('action-buttons');
-
-            const editButton = document.createElement('button');
-            editButton.innerText = 'Edit';
-            editButton.onclick = function () {
-                nameCell.contentEditable = true;
-                dosageCell.contentEditable = true;
-                nameCell.focus();
-            };
-
-            const updateButton = document.createElement('button');
-            updateButton.innerText = 'Update';
-            updateButton.onclick = function () {
-                nameCell.contentEditable = false;
-                dosageCell.contentEditable = false;
-            };
-
-            actionButtons.appendChild(editButton);
-            actionButtons.appendChild(updateButton);
-            actionCell.appendChild(actionButtons);
-
-            row.appendChild(nameCell);
-            row.appendChild(dosageCell);
-            row.appendChild(actionCell);
-
-            medicineDataContainer.appendChild(row);
-        }
-
-        function addMedicine() {
-            addMedicineRow('New Medicine', 'Dosage');
-        }
-
-        function dispenseDrugs() {
-            const popupMessage = document.getElementById('popupMessage');
-            popupMessage.style.display = 'block';
-
-            setTimeout(() => {
-                popupMessage.style.display = 'none';
-            }, 4000);
-        }
-    </script>
-
 </body>
+
+
 
 </html>

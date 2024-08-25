@@ -215,6 +215,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Existing floating header and sidebar -->
     <div class="floating-header">
@@ -237,74 +238,80 @@
             <input type="text" id="patientSearch" placeholder="Search by Patient Code or ID">
             <button onclick="filterPatients()">Search</button>
         </div>
-    <div id="patientListContainer">
-        <table class="patient-list">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>First Name</th>
-                    <th>Second Name</th>
-                    <th>Patient Code</th>
-                    <th>Email</th>
-                    <th>Phone Number</th>
-                    <th>Date of Birth (DoB)</th>
-                    <th>Location</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="patientList">
-                <!-- Patient data will be dynamically inserted here -->
-            </tbody>
-        </table>
-    </div>
+        <div id="patientListContainer">
+            <table class="patient-list">
+                <thead>
+                    <tr>
+                        <th>#</th>
 
-    <div id="prescriptionFormContainer" class="prescription-form">
-        <button class="close-btn" onclick="closePrescriptionForm()">×</button>
-        <div id="commentSection">
-            <h2>Add a Comment</h2>
-            <form id="commentForm">
-                <div class="form-group">
-                    <label for="comment">Enter Comment</label>
-                    <textarea id="comment" rows="3" required></textarea>
-                </div>
-                <div class="form-buttons">
-                    <button type="button" onclick="sendComment()">Send Comment</button>
-                </div>
-            </form>
+                        <th>First Name</th>
+                        <th>Second Name</th>
+
+
+                    </tr>
+                </thead>
+                <tbody id="patientList">
+
+                </tbody>
+            </table>
         </div>
-        <div id="prescriptionSection" style="display: none;">
-            <h2>Write a Prescription</h2>
-            <form id="prescriptionForm">
-                <div id="medicationList" class="medication-list">
-                    <div class="medication-item">
-                        <div class="form-group">
-                            <label for="medicationName1">Medication Name</label>
-                            <input type="text" id="medicationName1" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="dosage1">Dosage</label>
-                            <input type="text" id="dosage1" required>
-                        </div>
-                        <button type="button" onclick="sendMedication(1)">Send Prescription for This Medication</button>
+
+        <div id="prescriptionFormContainer" class="prescription-form">
+            <button class="close-btn" onclick="closePrescriptionForm()">×</button>
+            <div id="commentSection">
+                <h2>Add a Comment</h2>
+                <form id="commentForm">
+                    <div class="form-group">
+                        <label for="comment">Enter Comment</label>
+                        <textarea id="comment" rows="3" required></textarea>
                     </div>
-                </div>
-            <button type="button" onclick="addMedication()">Add Another Medication</button>
-            <!--   <div class="form-buttons">
+                    <div class="form-buttons">
+                        <button type="button" onclick="sendComment()">Send Comment</button>
+                    </div>
+                </form>
+            </div>
+            <div id="prescriptionSection" style="display: none;">
+                <h2>Write a Prescription</h2>
+                <form id="prescriptionForm">
+                    <div id="medicationList" class="medication-list">
+                        <div class="medication-item">
+                            <div class="form-group">
+                                <label for="medicationName1">Medication Name</label>
+                                <input type="text" id="medicationName1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dosage1">Dosage</label>
+                                <input type="text" id="dosage1" required>
+                            </div>
+                            <button type="button" onclick="sendMedication(1)">Send Prescription for This
+                                Medication</button>
+                        </div>
+                    </div>
+                    <button type="button" onclick="addMedication()">Add Another Medication</button>
+                    <!--   <div class="form-buttons">
                     <button type="button" onclick="sendAllPrescriptions()">Send All Prescriptions</button>
                     <button type="button" class="delete-btn" onclick="deletePrescription()">Delete Prescription</button>
                     <button type="button" onclick="editPrescription()">Edit Prescription</button>
                     <button type="button" onclick="updatePrescription()">Update Prescription</button>
                 </div>-->
-            </form>
+                </form>
+            </div>
         </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        <script>
+            function filterPatients() {
                 const authToken = localStorage.getItem('authToken'); // Retrieve the auth token from localStorage
+                const patientCode = document.getElementById('patientSearch').value.trim(); // Get the search input
 
-                // Fetch registered patients
-                fetch('https://hpms-0be27dd3c23f.herokuapp.com/api/v1/hos/{patient_code}/patient', {
+                if (!patientCode) {
+                    alert('Please enter a Patient Code or ID to search.');
+                    return;
+                }
+
+                // Construct the API endpoint with the patient code
+                const endpoint = `https://hpms-0be27dd3c23f.herokuapp.com/api/v1/hos/${patientCode}/patient`;
+
+                fetch(endpoint, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -312,52 +319,75 @@
                     }
                 })
                     .then(response => {
+                        console.log(`HTTP Status: ${response.status} - ${response.statusText}`); // Log HTTP status
                         if (response.ok) {
                             return response.json();
                         }
-                        throw new Error('Failed to fetch patients');
+                        throw new Error('Failed to fetch patient data');
                     })
                     .then(data => {
-                        console.log('Fetched Patients:', data);
+                        console.log('Fetched Data Structure:', data);
+                        const patient = data.success || data; // Adjust this line based on the actual structure
+
+                        // Log the patient data to inspect its structure
+                        console.log('Patient Data:', patient);
+
+                        // If the structure is not as expected, access the properties differently
                         const patientList = document.getElementById('patientList');
                         patientList.innerHTML = ''; // Clear any existing rows
 
-                        // Iterate over each patient and create a row in the table
-                        data.forEach((patient, index) => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${patient.first_name}</td>
-                <td>${patient.second_name}</td>
-                <td>${patient.patient_code}</td>
-                <td>${patient.email}</td>
-                <td>${patient.phone_number}</td>
-                <td>${patient.DOB}</td>
-                <td>${patient.location}</td>
-                <td><button class="action-btn" onclick="goToPrescriptionPage('${patient.patient_code}')">Write Prescription</button></td>
-            `;
-                            patientList.appendChild(row);
-                        });
+                        // Check if patient object has the necessary fields
+                        const id = patient.id || 'N/A';
+                        const firstName = patient.first_name || 'N/A';
+                        const secondName = patient.second_name || 'N/A';
+                        const patientCode = patient.patient_code || 'N/A';
+                        const email = patient.email || 'N/A';
+                        const phoneNumber = patient.phone_number || 'N/A';
+                        const dob = patient.DOB || 'N/A';
+                        const location = patient.location || 'N/A';
+
+                        // Create a row for the fetched patient
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                <td>1</td>
+                <!-- <td>${id}</td> -->
+                <td>${firstName}</td>
+                <td>${secondName}</td>
+                                 
+                <!--  <td>${patientCode}</td> -->
+                <!--  <td>${email}</td>-->
+                 <!-- <td>${phoneNumber}</td>-->
+                <!--  <td>${dob}</td> -->
+                 <!-- <td>${location}</td> -->
+
+                 
+                <td><button class="action-btn" onclick="goToPrescriptionPage('${patientCode}')">Write Prescription</button></td>
+                
+            
+            `; console.log('Patient Code:', patientCode);
+
+                        patientList.appendChild(row);
                     })
                     .catch(error => {
-                        console.error('Error:', error);
-                        alert('Failed to load patients: ' + error.message);
+                        console.error('Error:', error); // Log any errors//
+                        alert('Failed to load patient: ' + error.message);
                     });
-            });
-        let patientId;
-        let medicationIndex = 1;
+            }
 
-        function goToPrescriptionPage(id) {
-            document.getElementById('prescriptionFormContainer').style.display = 'block';
-            patientId = id;
-        }
+            function goToPrescriptionPage(patientCode) {
+                // Navigate to the prescription page for the selected patient
+                window.location.href = `http://127.0.0.1:5501/Medicine_Dispense_System/PrescriptionForm.htm?patient_code=${patientCode}`;
+            }
 
-        function closePrescriptionForm() {
-            document.getElementById('prescriptionFormContainer').style.display = 'none';
-            document.getElementById('commentSection').style.display = 'block';
-            document.getElementById('prescriptionSection').style.display = 'none';
-            document.getElementById('comment').value = '';
-            document.getElementById('medicationList').innerHTML = `
+
+     
+
+            function closePrescriptionForm() {
+                document.getElementById('prescriptionFormContainer').style.display = 'none';
+                document.getElementById('commentSection').style.display = 'block';
+                document.getElementById('prescriptionSection').style.display = 'none';
+                document.getElementById('comment').value = '';
+                document.getElementById('medicationList').innerHTML = `
                 <div class="medication-item">
                     <div class="form-group">
                         <label for="medicationName1">Medication Name</label>
@@ -370,116 +400,145 @@
                     <button type="button" onclick="sendMedication(1)">Send Prescription for This Medication</button>
                 </div>
             `;
-            medicationIndex = 1;
-        }
-
-       function sendComment() {
-            const comment = document.getElementById('comment').value;
-
-            // Assuming you have the prescription_id available
-            const prescription_id = 'some_prescription_id'; // Replace with actual prescription_id
-
-            console.log('Sending comment:', comment, 'For patient ID:', patientId);
-
-            // Sending the comment via a POST request to the API
-            fetch(`https://hpms-0be27dd3c23f.herokuapp.com/prescription/med/${prescription_id}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}` // If authentication is needed
-                },
-                body: JSON.stringify({
-                    comment: comment,
-                    patient_id: patientId
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Comment sent successfully:', data);
-                        alert('Comment sent successfully!');
-                    } else {
-                        console.error('Error sending comment:', data);
-                        alert('Failed to send comment. Please try again.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('An error occurred while sending the comment.');
-                });
-
-            document.getElementById('commentSection').style.display = 'none';
-            document.getElementById('prescriptionSection').style.display = 'block';
-        }
-
-        function addMedication() {
-            medicationIndex++;
-            const medicationList = document.getElementById('medicationList');
-            const medicationItem = document.createElement('div');
-            medicationItem.classList.add('medication-item');
-            medicationItem.innerHTML = `
-                <div class="form-group">
-                    <label for="medicationName${medicationIndex}">Medication Name</label>
-                    <input type="text" id="medicationName${medicationIndex}" required>
-                </div>
-                <div class="form-group">
-                    <label for="dosage${medicationIndex}">Dosage</label>
-                    <input type="text" id="dosage${medicationIndex}" required>
-                </div>
-                <button type="button" onclick="sendMedication(${medicationIndex})">Send Prescription for This Medication</button>
-            `;
-            medicationList.appendChild(medicationItem);
-        }
-
-        function sendMedication(index) {
-            const medicationName = document.getElementById(`medicationName${index}`).value;
-            const dosage = document.getElementById(`dosage${index}`).value;
-
-            if (medicationName && dosage) {
-                console.log(`Sending prescription for medication ${index}:`, { medicationName, dosage }, 'For patient ID:', patientId);
-                alert(`Prescription for Medication ${index} sent successfully!`);
-                // Add code here to actually send the prescription (e.g., via an API call)
-            } else {
-                alert('Please provide both medication name and dosage.');
+                medicationIndex = 1;
             }
-        }
+function sendComment(patientCode) {
+    const comment = document.getElementById('comment').value;
 
-        function sendAllPrescriptions() {
-            const medications = [];
-            for (let i = 1; i <= medicationIndex; i++) {
-                const medicationName = document.getElementById(`medicationName${i}`).value;
-                const dosage = document.getElementById(`dosage${i}`).value;
-                if (medicationName && dosage) {
-                    medications.push({ medicationName, dosage });
+    console.log('Sending comment:', comment, 'For patient ID:', patientId, 'patientCode:', patientCode);
+
+    // Step 1: Create the prescription
+    fetch(`https://hpms-0be27dd3c23f.herokuapp.com/hospital/${patientId}/prescription`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the auth token in the header
+        },
+        body: JSON.stringify({
+            patient_code: patientId
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json(); // Parse the JSON response to get the prescription_id
+        }
+        throw new Error('Failed to create prescription');
+    })
+    .then(data => {
+        const prescription_id = data.prescription_id; // Extract prescription_id from the response
+        console.log('Prescription ID:', prescription_id);
+
+        // Step 2: Send the comment
+        return fetch(`https://hpms-0be27dd3c23f.herokuapp.com/prescription/med/${prescription_id}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the auth token in the header
+            },
+            body: JSON.stringify({
+                comment: comment
+            })
+        });
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json(); // Parse the JSON response to check success
+        }
+        throw new Error('Failed to send comment');
+    })
+    .then(data => {
+        if (data.success) {
+            console.log('Comment sent successfully:', data);
+            alert('Comment sent successfully!');
+        } else {
+            console.error('Error sending comment:', data);
+            alert('Failed to send comment. Please try again.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while sending the comment.');
+    });
+
+    // Hide comment section and show prescription section
+    document.getElementById('commentSection').style.display = 'none';
+    document.getElementById('prescriptionSection').style.display = 'block';
+}
+
+
+          function sendMedication(index) {
+                const medicationName = document.getElementById(`medicationName${index}`).value;
+                const dosage = document.getElementById(`dosage${index}`).value;
+
+                fetch(`https://hpms-0be27dd3c23f.herokuapp.com/prescription/med/${prescriptionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the auth token in the header
+                    },
+                    body: JSON.stringify({
+                        medication_name: medicationName,
+                        dosage: dosage,
+                        prescription_id: prescriptionId // Make sure to use the correct prescription ID
+                    })
+                })
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json(); // Parse the JSON response
+                        }
+                        throw new Error('Failed to send medication');
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Medication sent successfully:', data);
+                            alert('Medication sent successfully!');
+                        } else {
+                            console.error('Error sending medication:', data);
+                            alert('Failed to send medication. Please try again.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('An error occurred while sending the medication.');
+                    });
+            }
+
+            function sendAllPrescriptions() {
+                const medications = [];
+                for (let i = 1; i <= medicationIndex; i++) {
+                    const medicationName = document.getElementById(`medicationName${i}`).value;
+                    const dosage = document.getElementById(`dosage${i}`).value;
+                    if (medicationName && dosage) {
+                        medications.push({ medicationName, dosage });
+                    }
+                }
+                if (medications.length > 0) {
+                    console.log('Sending all prescriptions:', medications, 'For patient ID:', patientId);
+                    alert('All prescriptions sent successfully!');
+                    // Add code here to actually send all prescriptions (e.g., via an API call)
+                } else {
+                    alert('No valid prescriptions to send.');
                 }
             }
-            if (medications.length > 0) {
-                console.log('Sending all prescriptions:', medications, 'For patient ID:', patientId);
-                alert('All prescriptions sent successfully!');
-                // Add code here to actually send all prescriptions (e.g., via an API call)
-            } else {
-                alert('No valid prescriptions to send.');
+
+            function deletePrescription() {
+                console.log('Deleting prescription for patient ID:', patientId);
+                alert('Prescription deleted successfully!');
+                // Add code here to actually delete the prescription (e.g., via an API call)
             }
-        }
 
-        function deletePrescription() {
-            console.log('Deleting prescription for patient ID:', patientId);
-            alert('Prescription deleted successfully!');
-            // Add code here to actually delete the prescription (e.g., via an API call)
-        }
+            function editPrescription() {
+                console.log('Editing prescription for patient ID:', patientId);
+                alert('Prescription edited successfully!');
+                // Add code here to actually edit the prescription (e.g., via an API call)
+            }
 
-        function editPrescription() {
-            console.log('Editing prescription for patient ID:', patientId);
-            alert('Prescription edited successfully!');
-            // Add code here to actually edit the prescription (e.g., via an API call)
-        }
-
-        function updatePrescription() {
-            console.log('Updating prescription for patient ID:', patientId);
-            alert('Prescription updated successfully!');
-            // Add code here to actually update the prescription (e.g., via an API call)
-        }
-    </script>
+            function updatePrescription() {
+                console.log('Updating prescription for patient ID:', patientId);
+                alert('Prescription updated successfully!');
+                // Add code here to actually update the prescription (e.g., via an API call)
+            }
+        </script>
 </body>
 
 </html>

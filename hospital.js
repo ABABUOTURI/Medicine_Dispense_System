@@ -31,11 +31,11 @@ document.getElementById('loginForm').addEventListener('submit', function (event)
 
             // Redirect to the appropriate dashboard based on the role
             if (role === "Doctor") {
-                window.location.href = "http://127.0.0.1:5501/Medicine_Dispense_System/DoctorDash.htm";
-            } else if (role === "pharmacist") {
-                window.location.href = "http://127.0.0.1:5501/Medicine_Dispense_System/pharmacistDash.htm";
+                window.location.href = "http://127.0.0.1:8080/Medicine_Dispense_System/DoctorDash.htm";
+            } else if (role === "Pharmacist") {
+                window.location.href = "http://127.0.0.1:8080/Medicine_Dispense_System/PharmacistDash.htm";
             } else if (role === "Admin") {
-                window.location.href = "http://127.0.0.1:5501/Medicine_Dispense_System/AdminDash.htm";
+                window.location.href = "http://127.0.0.1:8080/Medicine_Dispense_System/AdminDash.htm";
             } else {
                 alert("Invalid role!");
             }

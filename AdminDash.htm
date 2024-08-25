@@ -483,53 +483,75 @@
                 });
         }
 
+    function showPharmacistList(pharmacyId) {
+        // Define the endpoint to fetch pharmacists based on the pharmacy ID
+        const endpoint = `https://hpms-0be27dd3c23f.herokuapp.com/api/v1/pharmacists/${pharmacyId}`;
 
-        function showPharmacistList() {
-            const pharmacistListHtml = `
-              <h2>Pharmacist List</h2>
+        fetch(endpoint, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the auth token in the header
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    // Log the status and status text if the response is not OK
+                    console.error(`HTTP Error: ${response.status} - ${response.statusText}`);
+                    return response.text().then(text => {
+                        console.error('Response Text:', text); // Log the response text
+                        throw new Error('Failed to fetch pharmacist data');
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Pharmacist Data:', data); // Log the data received from the server
 
-<div class="user-list-container">
-    <table class="user-table">
-        <thead>
+                const pharmacists = data.pharmacies || []; // Use an empty array if pharmacies is undefined
+
+                // Create rows for each pharmacist
+                let rowsHtml = pharmacists.map(pharmacist => `
             <tr>
-                <th>First Name</th>
-                <th>Second Name</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-                <th>Role</th>
+                <td>${pharmacist.first_name}</td>
+                <td>${pharmacist.second_name}</td>
+                <td>${pharmacist.email}</td>
+                <td>${pharmacist.phone_number}</td>
+                <td>Pharmacist</td> <!-- Hardcoding role as 'Pharmacist' -->
             </tr>
-        </thead>
-        <tbody>
-            <!-- Example data rows -->
-            <tr>
-                <td>John</td>
-                <td>Doe</td>
-                <td>john.doe@example.com</td>
-                <td>(555) 123-4567</td>
-                <td>Pharmacist</td>
-            </tr>
-            <tr>
-                <td>Jane</td>
-                <td>Smith</td>
-                <td>jane.smith@example.com</td>
-                <td>(555) 987-6543</td>
-                <td>Pharmacist</td>
-            </tr>
-            <tr>
-                <td>Emily</td>
-                <td>Jones</td>
-                <td>emily.jones@example.com</td>
-                <td>(555) 456-7890</td>
-                <td>Doctor</td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+        `).join('');
+
+                // Construct HTML for the pharmacist list
+                const pharmacistListHtml = `
+            <h2>Pharmacist List</h2>
+            <div class="user-list-container">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>First Name</th>
+                            <th>Second Name</th>
+                            <th>Email</th>
+                            <th>Phone Number</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+                // Display the pharmacist list
+                document.getElementById('userListContainer').innerHTML = pharmacistListHtml;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load pharmacist list: ' + error.message);
+            });
+    }
 
 
-            `;
-            document.getElementById('userListContainer').innerHTML = pharmacistListHtml;
-        }
         function showRegistrationForm() {
             const registrationFormHtml = `
                <h2>Registration Form</h2>

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,8 @@
     <link rel="stylesheet" href="style.css">
     <style>
         .popup {
-            display: none; /* Hidden by default */
+            display: none;
+            /* Hidden by default */
             position: fixed;
             left: 0;
             top: 0;
@@ -56,42 +58,43 @@
         .popup-content .close-btn:hover {
             background: #008080;
             color: #fff;
-            
+
         }
+
         /* Floating header styling */
         .floating-header {
-    position: fixed;
-    top: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 95%;
-    background-color: #D3D3D3;
-    color: #008080;
-    border-radius: 20px;
-    padding: 22px 20px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+            position: fixed;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 95%;
+            background-color: #D3D3D3;
+            color: #008080;
+            border-radius: 20px;
+            padding: 22px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.floating-header h1 {
-    margin: 0;
-    color: #008080;
-}
+        .floating-header h1 {
+            margin: 0;
+            color: #008080;
+        }
 
-.floating-header .profile-icon {
-    display: flex;
-    align-items: center;
-}
+        .floating-header .profile-icon {
+            display: flex;
+            align-items: center;
+        }
 
-.profile-icon img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-left: 10px;
-}
+        .profile-icon img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
 
 
         /* Sidebar styling */
@@ -99,7 +102,8 @@
             width: 200px;
             background-color: #008080;
             position: fixed;
-            top: 100px; /* Below the header */
+            top: 100px;
+            /* Below the header */
             bottom: 0;
             left: 20px;
             border-radius: 20px;
@@ -128,28 +132,28 @@
         .sidebar ul li a:hover {
             text-decoration: underline;
         }
-
     </style>
 </head>
+
 <body>
-   <main>
-    <div class="floating-header" style="margin-right: 50%;width: 95%;" >
-        <h1>Dispensed Drugs</h1>
-        <!--<div class="profile-icon">
+    <main>
+        <div class="floating-header" style="margin-right: 50%;width: 95%;">
+            <h1>Dispensed Drugs</h1>
+            <!--<div class="profile-icon">
             <a href="#">My Profile</a>
             <img src="profile-icon.png" alt="Profile Icon">
         </div>-->
-    </div>
-    <div class="sidebar">
-        <ul>
-            <li><a href="DoctorDash.htm">Dashboard</a></li>
-            <!--<li><a href="#">Profile</a></li>-->
-            <li><a href="#">Log Out</a></li>
-        </ul>
-    </div>
+        </div>
+        <div class="sidebar">
+            <ul>
+                <li><a href="DoctorDash.htm">Dashboard</a></li>
+                <!--<li><a href="#">Profile</a></li>-->
+                <li><a href="#">Log Out</a></li>
+            </ul>
+        </div>
         <!-- Centered Heading outside the dashboard-container -->
         <h1 class="centered-heading" style="text-align: center;color: #008080;">Pharmacy Dashboard</h1>
-        
+
         <div class="dashboard-container" style="margin-bottom: 20%;">
             <!--<div class="image-container">
                 <img src="images/phm.webp" alt="Pharmacist Image">
@@ -165,57 +169,94 @@
                 </div>
             </div>
         </div>
-   </main>
+    </main>
 
-   <!-- OTP Popup -->
-   <div class="popup" id="otp-popup">
-       <div class="popup-content">
-           <h2>Enter OTP</h2>
-           <input type="text" id="otp-code" placeholder="Enter OTP code">
-           <button id="search-otp">Search</button>
-           <button class="close-btn" id="close-popup">Close</button>
-       </div>
-   </div>
+    <!-- OTP Popup -->
+    <div class="popup" id="otp-popup">
+        <div class="popup-content">
+            <h2>Enter OTP</h2>
+            <input type="text" id="otp-code" placeholder="Enter OTP code">
+            <button id="search-otp">Search</button>
+            <button class="close-btn" id="close-popup">Close</button>
+        </div>
+    </div>
 
-   <script>
-       // JavaScript to handle button clicks and navigate to the appropriate page
-       document.querySelectorAll('.button').forEach(button => {
-           button.addEventListener('click', () => {
-               // Check the text content of the button and navigate to the appropriate page
-               switch (button.textContent.trim()) {
-                   case 'Drug Stock':
-                       window.location.href = 'Drugstock.htm'; // Replace with the actual URL for Drug Stock page
-                       break;
-                   case 'Order Drugs':
-                       window.location.href = 'OrderDrugs.htm'; // Replace with the actual URL for Order Drugs page
-                       break;
-                   case 'Patient OTP':
-                       document.getElementById('otp-popup').style.display = 'flex';
-                       break;
-                   case 'Medications':
-                       window.location.href = 'MedicationsIssued.htm'; // Replace with the actual URL for Dispense Drugs page
-                       break;
-                   default:
-                       alert(`No page available for ${button.textContent.trim()}`);
-               }
-           });
-       });
+    <script>
+        // JavaScript to handle button clicks and navigate to the appropriate page
+        document.querySelectorAll('.button').forEach(button => {
+            button.addEventListener('click', () => {
+                // Check the text content of the button and navigate to the appropriate page
+                switch (button.textContent.trim()) {
+                    case 'Drug Stock':
+                        window.location.href = 'Drugstock.htm'; // Replace with the actual URL for Drug Stock page
+                        break;
+                    case 'Order Drugs':
+                        window.location.href = 'OrderDrugs.htm'; // Replace with the actual URL for Order Drugs page
+                        break;
+                    case 'Patient OTP':
+                        document.getElementById('otp-popup').style.display = 'flex';
+                        break;
+                    case 'Medications':
+                        window.location.href = 'MedicationsIssued.htm'; // Replace with the actual URL for Dispense Drugs page
+                        break;
+                    default:
+                        alert(`No page available for ${button.textContent.trim()}`);
+                }
+            });
+        });
 
-       // Handle OTP Popup functionality
-       document.getElementById('search-otp').addEventListener('click', () => {
-           const otpCode = document.getElementById('otp-code').value;
-           if (otpCode) {
-               // Simulate OTP validation and navigation
-               // You can add actual OTP validation here if needed
-               window.location.href = 'DispenseDRug.htm'; // Navigate to DispenseDRug page
-           } else {
-               alert('Please enter OTP code.');
-           }
-       });
+        // Handle OTP Popup functionality
+        document.getElementById('search-otp').addEventListener('click', () => {
+            const otpCode = document.getElementById('otp-code').value;
+            console.log(otpCode)
 
-       document.getElementById('close-popup').addEventListener('click', () => {
-           document.getElementById('otp-popup').style.display = 'none';
-       });
-   </script>
+            if (otpCode) {
+                // API endpoint to search for a prescription using the OTP code
+                const endpoint = `http://hpms-0be27dd3c23f.herokuapp.com/api/v1/otp/${otpCode}`;
+
+                // Fetch the prescription details using the OTP code
+                fetch(endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                    }
+                })
+                    .then(response => {
+                        console.log(response)
+                        if (!response.ok) {
+                            return response.text().then(text => {
+                                console.error(text.error);
+                                throw new Error(text);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            const mydata = JSON.stringify(data.success); // Convert the object to a JSON string
+                            const encodedData = encodeURIComponent(mydata); // Encode the JSON string for URL
+
+                            // Pass the data to the next page via UR
+                            window.location.href = `DispenseDrug.htm?data=${encodedData}&otp=${otpCode}`;
+                        }
+                    })
+
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert(error);
+                    });
+            } else {
+                alert('Please enter OTP code.');
+            }
+        });
+
+        // Close the OTP popup
+        document.getElementById('close-popup').addEventListener('click', () => {
+            document.getElementById('otp-popup').style.display = 'none';
+        });
+
+    </script>
 </body>
+
 </html>
