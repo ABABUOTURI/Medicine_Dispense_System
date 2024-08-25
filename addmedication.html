@@ -195,7 +195,7 @@
 
                     console.log('Request Body:', JSON.stringify(requestBody)); // Debugging: Log the request body
 
-                    fetch(`http://hpms-0be27dd3c23f.herokuapp.com/api/v1/prescrition/med/${prescriptionId}`, {
+                    fetch(`https://hpms-0be27dd3c23f.herokuapp.com/api/v1/prescrition/med/${prescriptionId}`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${authToken}`,
