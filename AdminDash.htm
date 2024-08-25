@@ -415,15 +415,15 @@
             document.getElementById('userListContainer').innerHTML = patientListHtml;
         }
 
-     function showDoctorList(hospitalId) {
+    function showDoctorList(hospitalId) {
             // Adjust the endpoint if the hospitalId is needed in the URL
-            const endpoint = `https://hpms-0be27dd3c23f.herokuapp.com/api/v1/doctors`;
+            const endpoint = `https://hpms-0be27dd3c23f.herokuapp.com/api/v1/doctors/${hospitalId}`;
 
             fetch(endpoint, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Include the token for authorization
+                    'Authorization': `Bearer ${localStorage.getItem('authToken')}` // Properly quoted
                 }
             })
                 .then(response => {
@@ -440,8 +440,9 @@
                 .then(data => {
                     console.log('Doctor Data:', data); // Log the data received from the server
 
-                    const doctors = data.doctors || []; // Use an empty array if `doctors` is undefined
+                    const doctors = data.doctors || []; // Use an empty array if doctors is undefined
 
+                    // Create rows for each doctor
                     let rowsHtml = doctors.map(doctor => `
             <tr>
                 <td>${doctor.first_name}</td>
@@ -452,6 +453,7 @@
             </tr>
         `).join('');
 
+                    // Construct HTML for the doctor list
                     const doctorListHtml = `
             <h2>Doctor List</h2>
             <div class="user-list-container">
@@ -471,6 +473,8 @@
                 </table>
             </div>
         `;
+
+                    // Display the doctor list
                     document.getElementById('userListContainer').innerHTML = doctorListHtml;
                 })
                 .catch(error => {
@@ -478,6 +482,7 @@
                     alert('Failed to load doctor list: ' + error.message);
                 });
         }
+
 
         function showPharmacistList() {
             const pharmacistListHtml = `

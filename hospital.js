@@ -1,4 +1,4 @@
-document.getElementById('loginForm').addEventListener('submit', function(event) {
+document.getElementById('loginForm').addEventListener('submit', function (event) {
     event.preventDefault();
 
     const email = document.getElementById('email').value;
@@ -17,39 +17,39 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
         },
         body: JSON.stringify(users),
     })
-    .then(response => {
-        if (response.ok) {
-            return response.json();
-        }
-        throw new Error('Invalid login credentials');
-    })
-    .then(data => {
-        // Assuming the response contains the role in a field called 'role' and a token in 'token'
-        const role = data.role;
-        localStorage.setItem('authToken', data.access_token);  // Store the token in localStorage
-        alert('Login successful!');
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+            throw new Error('Invalid login credentials');
+        })
+        .then(data => {
+            // Assuming the response contains the role in a field called 'role' and a token in 'token'
+            const role = data.role;
+            localStorage.setItem('authToken', data.access_token);  // Store the token in localStorage
+            alert('Login successful!');
 
-        // Redirect to the appropriate dashboard based on the role
-        if (role === "doctor") {
-            window.location.href = "file:///C:/Users/ngeti/Desktop/projects/hospital2/Medicine_Dispense_System/DoctorDash.htm";
-        } else if (role === "pharmacist") {
-            window.location.href = "file:///C:/Users/ngeti/Desktop/projects/hospital2/Medicine_Dispense_System/pharmacistDash.htm";
-        } else if (role === "Admin") {
-            window.location.href = "file:///C:/Users/ngeti/Desktop/projects/hospital2/Medicine_Dispense_System/AdminDash.htm";
-        } else {
-            alert("Invalid role!");
-        }
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        alert('Login failed: ' + error.message);
-    });
+            // Redirect to the appropriate dashboard based on the role
+            if (role === "Doctor") {
+                window.location.href = "http://127.0.0.1:5501/Medicine_Dispense_System/DoctorDash.htm";
+            } else if (role === "pharmacist") {
+                window.location.href = "http://127.0.0.1:5501/Medicine_Dispense_System/pharmacistDash.htm";
+            } else if (role === "Admin") {
+                window.location.href = "http://127.0.0.1:5501/Medicine_Dispense_System/AdminDash.htm";
+            } else {
+                alert("Invalid role!");
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('Login failed: ' + error.message);
+        });
 });
 
 
 
 //The code below handles Registration
-document.getElementById('signupForm').addEventListener('submit', function(event) {
+document.getElementById('signupForm').addEventListener('submit', function (event) {
     let valid = true;
 
     // Get form values
@@ -110,10 +110,10 @@ document.getElementById('signupForm').addEventListener('submit', function(event)
 });
 
 //Medication issued to the patient
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     // Placeholder: Fetch data from your database and update the table
     let patientData = document.getElementById('patientData');
-    
+
     // Example data
     let patients = [
         {
@@ -135,7 +135,7 @@ document.addEventListener("DOMContentLoaded", function() {
             date: '2024-08-19'
         }
     ];
-    
+
     if (patients.length > 0) {
         patientData.innerHTML = '';
         patients.forEach(patient => {
