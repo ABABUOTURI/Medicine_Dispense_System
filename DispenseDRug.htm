@@ -274,7 +274,7 @@
                 const encodedData = urlParams.get('data');
                 const otp = urlParams.get('otp')
                 const mydata = JSON.parse(decodeURIComponent(encodedData));
-                fetch(`http://hpms-0be27dd3c23f.herokuapp.com/api/v1/dis/${mydata.id}/${otp}`, {
+                fetch(`https://hpms-0be27dd3c23f.herokuapp.com/api/v1/dis/${mydata.id}/${otp}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
