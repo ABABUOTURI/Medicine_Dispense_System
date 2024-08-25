@@ -242,6 +242,7 @@
             <table class="patient-list">
                 <thead>
                     <tr>
+                        <th>#</th>
 
                         <th>First Name</th>
                         <th>Second Name</th>
@@ -375,7 +376,7 @@
 
             function goToPrescriptionPage(patientCode) {
                 // Navigate to the prescription page for the selected patient
-                window.location.href = `http://127.0.0.1:5501/Medicine_Dispense_System/PrescriptionForm.htm?patient_code=${patientCode}`;
+                window.location.href = `PrescriptionForm.htm?patient_code=${patientCode}`;
             }
 
 
