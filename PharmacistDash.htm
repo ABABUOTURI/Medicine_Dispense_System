@@ -212,8 +212,6 @@
 
             if (otpCode) {
                 // API endpoint to search for a prescription using the OTP code
-                const endpoint = `http://hpms-0be27dd3c23f.herokuapp.com/api/v1/otp/${otpCode}`;
-
                 // Fetch the prescription details using the OTP code
                 fetch(endpoint, {
                     method: 'GET',
