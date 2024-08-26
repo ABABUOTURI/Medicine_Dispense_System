@@ -146,7 +146,7 @@
         </div>
         <div class="sidebar">
             <ul>
-                <li><a href="DoctorDash.htm">Dashboard</a></li>
+                <li><a href="PharmacistDash.htm">Dashboard</a></li>
                 <!--<li><a href="#">Profile</a></li>-->
                 <li><a href="#">Log Out</a></li>
             </ul>
@@ -185,6 +185,7 @@
         // JavaScript to handle button clicks and navigate to the appropriate page
         document.querySelectorAll('.button').forEach(button => {
             button.addEventListener('click', () => {
+
                 // Check the text content of the button and navigate to the appropriate page
                 switch (button.textContent.trim()) {
                     case 'Drug Stock':
@@ -208,12 +209,11 @@
         // Handle OTP Popup functionality
         document.getElementById('search-otp').addEventListener('click', () => {
             const otpCode = document.getElementById('otp-code').value;
-            console.log(otpCode)
+            console.log(otpCode);
 
             if (otpCode) {
-                // API endpoint to search for a prescription using the OTP code
-                // Fetch the prescription details using the OTP code
-                const endpoint = `https://hpms-0be27dd3c23f.herokuapp.com/api/v1/${otpCode}`
+                const endpoint = `https://hpms-0be27dd3c23f.herokuapp.com/api/v1/otp/${otpCode}`;
+
                 fetch(endpoint, {
                     method: 'GET',
                     headers: {
@@ -222,10 +222,10 @@
                     }
                 })
                     .then(response => {
-                        console.log(response)
+                        console.log(response);
                         if (!response.ok) {
                             return response.text().then(text => {
-                                console.error(text.error);
+                                console.error('Error:', text);
                                 throw new Error(text);
                             });
                         }
@@ -233,22 +233,24 @@
                     })
                     .then(data => {
                         if (data.success) {
-                            const mydata = JSON.stringify(data.success); // Convert the object to a JSON string
+                            const mydata = JSON.stringify(data.success); // Convert to JSON string
                             const encodedData = encodeURIComponent(mydata); // Encode the JSON string for URL
 
-                            // Pass the data to the next page via UR
+                            // Pass the data to the next page via URL
                             window.location.href = `DispenseDrug.htm?data=${encodedData}&otp=${otpCode}`;
+                        } else {
+                            alert('Failed to fetch data.');
                         }
                     })
-
                     .catch(error => {
                         console.error('Error:', error);
-                        alert(error);
+                        alert('Error fetching OTP: ' + error.message);
                     });
             } else {
                 alert('Please enter OTP code.');
             }
         });
+
 
         // Close the OTP popup
         document.getElementById('close-popup').addEventListener('click', () => {
