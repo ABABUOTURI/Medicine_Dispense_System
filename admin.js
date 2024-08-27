@@ -34,7 +34,7 @@ document.getElementById('signupForm').addEventListener('submit', function(e) {
     .then(data => {
         alert('Registration successful!');
         // Optionally redirect to another page or login page
-        window.location.href = 'Login.htm';
+        window.location.href = 'index.htm';
     })
     .catch((error) => {
         console.error('Error:', error);
